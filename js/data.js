@@ -23,19 +23,33 @@ window.ERSTI = {
   /* ------------------------------------------------------------------ */
   /* Orte                                                                */
   /* ------------------------------------------------------------------ */
+  /* ------------------------------------------------------------------ */
+  /* Gebäude & Raumcode-Präfixe (F = Friedrichsbau, A = Alte Anatomie, P = Pavillon) */
+  /* ------------------------------------------------------------------ */
+  buildings: {
+    "F": { code: "F", name: "Friedrichsbau", address: "Hauptstr. 47–51", desc: "Hauptgebäude des Instituts (Vordergebäude zur Straße, Hintergebäude im Hof)" },
+    "A": { code: "A", name: "Alte Anatomie", address: "Hauptstr. 47–51", desc: "Historischer Trakt im Hof (z. B. Übungsraum A102 im 1. OG)" },
+    "P": { code: "P", name: "Pavillon", address: "Akademiestr. 3", desc: "Freistehendes Gartengebäude im Innenhof / Anatomiegarten" }
+  },
+
   places: {
-    "HS II":    { short: "HS II", name: "Hörsaal II", desc: "Erdgeschoss im Hintergebäude des Psychologischen Instituts, Hauptstr. 47–51", map: "Psychologisches Institut, Hauptstraße 47, 69117 Heidelberg" },
-    "HS I":     { short: "HS I", name: "Hörsaal I", desc: "Psychologisches Institut, Hauptstr. 47–51", map: "Psychologisches Institut, Hauptstraße 47, 69117 Heidelberg" },
-    "KG":       { short: "KG", name: "Kleingruppenraum", desc: "Raum deiner Kleingruppe – sagen dir deine Tutor:innen am ersten Tag", map: "Psychologisches Institut, Hauptstraße 47, 69117 Heidelberg" },
+    "HS II":    { short: "HS II", name: "Hörsaal II", desc: "Erdgeschoss im Hintergebäude des Friedrichsbaus (F), Hauptstr. 47–51", map: "Psychologisches Institut, Hauptstraße 47, 69117 Heidelberg" },
+    "HS I":     { short: "HS I", name: "Hörsaal I", desc: "1. OG im Hintergebäude des Friedrichsbaus (F), Hauptstr. 47–51", map: "Psychologisches Institut, Hauptstraße 47, 69117 Heidelberg" },
+    "KG":       { short: "KG", name: "Kleingruppenraum", desc: "Raum deiner Kleingruppe im Friedrichsbau (F) – sagen dir deine Tutor:innen am ersten Tag", map: "Psychologisches Institut, Hauptstraße 47, 69117 Heidelberg" },
     "KG-PF":    { short: "KG-PF", name: "Praxisfeld-Kleingruppe", desc: "Achtung: andere Räume als deine normale Kleingruppe!", map: "Psychologisches Institut, Hauptstraße 47, 69117 Heidelberg" },
-    "AE":       { short: "AE", name: "Arbeitseinheit", desc: "Räume der jeweiligen Arbeitseinheit (AE) – Treffpunkt mit Tutor:innen vereinbaren", map: "Psychologisches Institut, Hauptstraße 47, 69117 Heidelberg" },
+    "AE":       { short: "AE", name: "Arbeitseinheit", desc: "Räume der jeweiligen Forschungseinheit (Friedrichsbau F / Pavillon P) – Treffpunkt mit Tutor:innen", map: "Psychologisches Institut, Hauptstraße 47, 69117 Heidelberg" },
     "PF":       { short: "PF vor Ort", name: "Praxisfeld vor Ort", desc: "Externer Ort, den deine Praxisfeld-Gruppe besucht", map: "Psychologisches Institut, Hauptstraße 47, 69117 Heidelberg" },
-    "UB":       { short: "UB", name: "Universitätsbibliothek", desc: "Treffpunkt an der UB (Altstadt)", map: "Universitätsbibliothek Heidelberg, Plöck 107-109, 69117 Heidelberg" },
-    "ÜR":       { short: "ÜR B/C", name: "ÜR B, A102 + ÜR C", desc: "Räume für die Hochschulpolitik-Session (Psychologisches Institut)", map: "Psychologisches Institut, Hauptstraße 47, 69117 Heidelberg" },
+    "UB":       { short: "UB", name: "Universitätsbibliothek", desc: "Treffpunkt an der UB Altstadt (Plöck 107–109)", map: "Universitätsbibliothek Heidelberg, Plöck 107-109, 69117 Heidelberg" },
+    "ÜR":       { short: "ÜR B/C", name: "ÜR B, A102 + ÜR C", desc: "Räume im Institut: ÜR B & ÜR C (Friedrichsbau F) sowie Raum A102 (Alte Anatomie A)", map: "Psychologisches Institut, Hauptstraße 47, 69117 Heidelberg" },
     "Uniplatz": { short: "Uniplatz", name: "Universitätsplatz", desc: "Altstadt, Begrüßung durch die Rektorin", map: "Universitätsplatz, 69117 Heidelberg" },
     "Bunsen":   { short: "Bunsen", name: "Bunsen-Statue", desc: "Vor dem Psychologischen Institut (Hauptstraße) – Treffpunkt für Abendprogramm", map: "Bunsen-Denkmal, Hauptstraße, 69117 Heidelberg" },
-    "Foyer":    { short: "Foyer", name: "Foyer Hintergebäude", desc: "Foyer im Hintergebäude des Instituts", map: "Psychologisches Institut, Hauptstraße 47, 69117 Heidelberg" },
-    "Altstadt": { short: "Altstadt", name: "Altstadt / Campus", desc: "Willkommenstag mit Infoständen rund um den Universitätsplatz", map: "Universitätsplatz, 69117 Heidelberg" }
+    "Foyer":    { short: "Foyer", name: "Foyer Hintergebäude", desc: "Foyer im Hintergebäude des Friedrichsbaus (F)", map: "Psychologisches Institut, Hauptstraße 47, 69117 Heidelberg" },
+    "Altstadt": { short: "Altstadt", name: "Altstadt / Campus", desc: "Willkommenstag mit Infoständen rund um den Universitätsplatz", map: "Universitätsplatz, 69117 Heidelberg" },
+    "F042":     { short: "F042", name: "Prüfungsamt (Raum F042)", desc: "Friedrichsbau (F), EG Hintergebäude, Sprechzeiten Mo, Di, Do 10:00–11:30, Fr 11:00–12:00", map: "Psychologisches Institut, Hauptstraße 47, 69117 Heidelberg" },
+    "F015":     { short: "F015", name: "Buchscanner (Raum F015)", desc: "Friedrichsbau (F), EG Vordergebäude bei Herrn Kulczynski", map: "Psychologisches Institut, Hauptstraße 47, 69117 Heidelberg" },
+    "F017":     { short: "F017", name: "Erste-Hilfe-Zimmer (Raum F017)", desc: "Friedrichsbau (F), EG Vordergebäude schräg ggü. Aufzug (Schlüssel im Verw.-Sekretariat)", map: "Psychologisches Institut, Hauptstraße 47, 69117 Heidelberg" },
+    "Testothek":{ short: "019–021", name: "Testothek (Räume 019–021)", desc: "Friedrichsbau (F), Zwischengeschoss Vordergebäude (Frau Beschorner)", map: "Psychologisches Institut, Hauptstraße 47, 69117 Heidelberg" },
+    "Keller":   { short: "FS-Keller", name: "Fachschaftskeller", desc: "Friedrichsbau (F), Keller des Hintergebäudes (jeden Mo 18:00 Uhr Sitzung)", map: "Psychologisches Institut, Hauptstraße 47, 69117 Heidelberg" }
   },
 
   /* ------------------------------------------------------------------ */
@@ -159,7 +173,7 @@ window.ERSTI = {
     { date: "2026-10-05", title: "Start EKS-Woche", text: "09:15 Uhr, Hörsaal II – Begrüßung & Einstieg", loc: "HS II", cat: "eks" },
     { date: "2026-10-06", dateEnd: "2026-10-09", title: "Übungsgruppe wählen (heiCO)", text: "Allgemeine Psychologie 1 direkt in heiCO belegen", deadline: true, cat: "exam" },
     { date: "2026-10-12", title: "Willkommenstag & EKS-Ende", text: "Rektorin 10:00 Uhr am Universitätsplatz; Beginn der Vorlesungszeit", loc: "Uniplatz", cat: "eks" },
-    { date: "2026-10-13", title: "Poster-Kongress", text: "14:00 Uhr, Foyer & HS II – Präsentation der Forschungsprojekte", loc: "Foyer", cat: "eks" },
+    { date: "2026-10-13", title: "Empra-Poster-Kongress", text: "14:00 Uhr, Foyer & HS II – Präsentation der empirischen Forschungsprojekte (Methoden 3, 4./5. Sem.)", loc: "Foyer", cat: "eks" },
     { date: "2026-10-14", title: "Erste Vorlesung: Entwicklungspsychologie", text: "11:15–12:45 Uhr, Hörsaal II (Prof. Pauen)", loc: "HS II", cat: "vl" },
     { date: "2026-10-15", title: "Erste Vorlesung: Pädagogische Psychologie", text: "11:15–12:45 Uhr, Hörsaal II (Prof. Spinath)", loc: "HS II", cat: "vl" },
     { date: "2026-10-15", title: "Party „Psychopathie“", text: "Ab 21:00 Uhr im Foyer – Ersti-Party der Fachschaft", loc: "Foyer", cat: "eks" },
@@ -170,9 +184,11 @@ window.ERSTI = {
     { date: "2026-10-27", title: "Statistik-Tutorien starten", text: "Freiwillig – Di (Gr. 1), Mi (Gr. 2), Do (Gr. 3)", cat: "ue" },
     { date: "2026-11-13", dateEnd: "2026-11-15", title: "Ersti-Wochenende der Fachschaft", text: "Gemeinsames Hüttenwochenende zum Kennenlernen", cat: "eks" },
     { date: "2026-12-21", dateEnd: "2027-01-06", title: "Vorlesungsfreie Zeit (Weihnachten)", text: "Weihnachtspause – keine regulären Lehrveranstaltungen", holiday: true, cat: "holiday" },
+    { date: "2026-12-24", dateEnd: "2027-01-06", title: "Institut komplett geschlossen", text: "Weihnachtsschließzeit: Hauptstraße 47–51 durchgehend geschlossen", holiday: true, cat: "holiday" },
     { date: "2027-01-15", dateEnd: "2027-02-15", title: "Rückmeldefrist SoSe 2027", text: "Semesterbeitrag für das Sommersemester 2027 überweisen", deadline: true, cat: "exam" },
     { date: "2027-02-06", title: "Ende der Vorlesungszeit WiSe 2026/27", text: "Letzter Tag der regelmäßigen Lehrveranstaltungen", cat: "exam" },
     { date: "2027-02-08", dateEnd: "2027-02-19", title: "Klausurenphase WiSe 2026/27", text: "Abschlussklausuren (Statistik, Allg. Psych. I, Entwicklung, Pädagogik)", exam: true, cat: "exam" },
+    { date: "2027-03-01", dateEnd: "2027-03-15", title: "Seminarwahl SoSe 2027 (voraussichtlich)", text: "heiCO-Vergabeverfahren für Seminare und Übungen im Sommersemester 2027 (Termin voraussichtlich)", deadline: true, tentative: true, cat: "exam" },
     { date: "2027-03-31", title: "Semesterende WiSe 2026/27", text: "Offizielles Ende des Wintersemesters", cat: "exam" }
   ],
 
@@ -377,27 +393,188 @@ window.ERSTI = {
   /* ------------------------------------------------------------------ */
   /* Kontakte, Systeme, Glossar, offene Fragen, Quellen                  */
   /* ------------------------------------------------------------------ */
+  /* ------------------------------------------------------------------ */
+  /* Kontakte, Systeme, Glossar, offene Fragen, Quellen                  */
+  /* ------------------------------------------------------------------ */
   contacts: [
-    { role: "Fachstudienberatung & EKS-Leitung", name: "Dipl.-Psych. Stefanie Glawe", extra: "Fachstudienberaterin B.Sc." },
-    { role: "EKS-Leitung & Prüfungsausschuss (Vorsitz)", name: "apl. Prof. Dr. Oliver Schilling", extra: "Ansprechpartner für Prüfungsfragen" },
-    { role: "Dekanat der Fakultät", name: "Prof. Dr. Tanja Bipp", extra: "" },
-    { role: "Studienberatung Bachelor (E-Mail)", name: "studienberatung-bachelor@psychologie.uni-heidelberg.de", mail: "studienberatung-bachelor@psychologie.uni-heidelberg.de", extra: "" },
-    { role: "Telefon EKS-Leitung", name: "06221 / 54-7787", tel: "+49622154 7787", extra: "" },
-    { role: "Adresse", name: "Psychologisches Institut, Hauptstr. 47–51, 69117 Heidelberg", extra: "Hörsaal II: Erdgeschoss im Hintergebäude" },
-    { role: "Fachschaft Psychologie", name: "Studierendenvertretung", extra: "Organisiert Kneipenseminar, Stadtrallye, Ersti-Wochenende" }
+    {
+      id: "pruefungsamt",
+      role: "Prüfungsamt Psychologie",
+      name: "Michael Brünnich & Juliane Schuster",
+      mail: "pruefungsamt@psychologie.uni-heidelberg.de",
+      tel: "+49 6221 54-7342",
+      room: "F042 (Friedrichsbau EG Hintergebäude)",
+      hours: "Offene Sprechstunde: Mo, Di, Do 10:00–11:30, Fr 11:00–12:00 | Tel: Di 14:00–15:00, Do 12:00–13:00",
+      postfach: "Postfach Nr. 55 im Institut",
+      zustaendig: [
+        "Krankmeldungen & Atteste bei Klausuren (3-Tage-Frist!)",
+        "Transcript of Records (ToR) & Leistungsübersichten",
+        "Prüfungsanmeldungen & Notenverbuchung",
+        "Anmeldung und Abgabe der Bachelorarbeit",
+        "Abschlusszeugnisse & amtliche Bescheinigungen",
+        "VPN-Laufzettel zum Abholen (vor Raum F042)"
+      ],
+      source: "https://www.psychologie.uni-heidelberg.de/studium/pruefungsamt/kontakt/"
+    },
+    {
+      id: "pruefungsausschuss",
+      role: "Prüfungsausschuss Psychologie",
+      name: "apl. Prof. Dr. Oliver Schilling (Vorsitz), Prof. Dr. Cornelia Wrzus (Stellvertretung)",
+      mail: "pruefungsausschuss@psychologie.uni-heidelberg.de",
+      room: "Friedrichsbau (F)",
+      hours: "Nach Vereinbarung per E-Mail",
+      zustaendig: [
+        "Anerkennung externer Studien- und Prüfungsleistungen",
+        "Anträge auf 2. Wiederholung einer Prüfung (§ 20 Abs. 1 PO)",
+        "Fristverlängerungen Bachelorarbeit in begründeten Fällen",
+        "Grundsätzliche Auslegungsfragen der Prüfungsordnung (PO)",
+        "Nachteilsausgleiche bei chronischer Erkrankung oder Behinderung"
+      ],
+      source: "https://www.psychologie.uni-heidelberg.de/studium/pruefungsamt/pruefungsausschuss/"
+    },
+    {
+      id: "studienberatung_bsc",
+      role: "Fachstudienberatung B.Sc. & EKS-Leitung",
+      name: "Dipl.-Psych. Stefanie Glawe",
+      mail: "studienberatung-bachelor@psychologie.uni-heidelberg.de",
+      tel: "+49 6221 54-7787",
+      room: "Friedrichsbau (F)",
+      hours: "Sprechstunde nach Vereinbarung per E-Mail",
+      zustaendig: [
+        "Studienverlaufsplanung & Fachstudienberatung B.Sc.",
+        "Anerkennung von Pflichtpraktika (Orientierungspraktikum & BQT I)",
+        "Fragen zur Orientierungsprüfung & Studienorganisation",
+        "Beratung bei Studienzweifeln oder Fachwechsel",
+        "Organisation der EKS-Woche"
+      ],
+      source: "https://www.psychologie.uni-heidelberg.de/studium/a-z/fachstudienberatung"
+    },
+    {
+      id: "seminaranmeldung",
+      role: "Seminaranmeldung & Lehrveranstaltungsmanagement",
+      name: "Team Seminaranmeldung",
+      mail: "seminaranmeldung@psychologie.uni-heidelberg.de",
+      room: "Psychologisches Institut",
+      hours: "Per E-Mail erreichbar",
+      zustaendig: [
+        "Fragen zur Seminar- und Übungswahl in heiCO",
+        "Platzvergabe und Nachrückverfahren bei Seminaren",
+        "Härtefälle bei Seminarkollisionen"
+      ],
+      source: "https://www.psychologie.uni-heidelberg.de/studium/seminarwahl/"
+    },
+    {
+      id: "erasmus",
+      role: "ERASMUS & Auslandsstudium",
+      name: "Prof. Dr. Dirk Hagemann",
+      mail: "dirk.hagemann@psychologie.uni-heidelberg.de",
+      room: "Friedrichsbau (F)",
+      hours: "Nach Vereinbarung per E-Mail",
+      zustaendig: [
+        "Planung von Auslandssemestern über ERASMUS+",
+        "Partneruniversitäten der Psychologie in Europa",
+        "Bewerbungsverfahren und Learning Agreements"
+      ],
+      source: "https://www.psychologie.uni-heidelberg.de/studium/a-z/erasmus"
+    },
+    {
+      id: "comenius",
+      role: "Comenius-Programm (Peer-Mentoring)",
+      name: "Comenius Mentoring-Team",
+      mail: "comenius@uni-hd.de",
+      room: "Psychologisches Institut",
+      hours: "Per E-Mail und in den Mentoring-Terminen",
+      zustaendig: [
+        "Peer-Mentoring in Kleingruppen à 5–8 Studierende im 1. Semester",
+        "Unterstützung beim Studieneinstieg durch erfahrene Studierende",
+        "Lernstrategien, Prüfungsvorbereitung und Vernetzung"
+      ],
+      source: "https://www.psychologie.uni-heidelberg.de/studium/a-z/comenius-programm"
+    },
+    {
+      id: "it_support",
+      role: "IT-Support & IT-Administration PI",
+      name: "Johannes Hofmeister, Silvia Pabianczyk, Dr. G. F. Ehrenbolger, Olaf Papendieck",
+      mail: "it-support@psychologie.uni-heidelberg.de",
+      room: "Friedrichsbau (F)",
+      hours: "Mo–Fr per Mail oder Ticketsystem",
+      zustaendig: [
+        "IT-Support und Konten am Psychologischen Institut",
+        "Moodle-Kurszugänge und Institutsserver",
+        "WLAN- und Netzwerkfragen im Institut"
+      ],
+      source: "https://www.psychologie.uni-heidelberg.de/funktion/"
+    },
+    {
+      id: "bafoeg",
+      role: "BAföG-Beauftragte",
+      name: "Hannah Neubauer & Stefanie Glawe",
+      mail: "stefanie.glawe@psychologie.uni-heidelberg.de",
+      room: "Friedrichsbau (F)",
+      hours: "Nach Vereinbarung per E-Mail",
+      zustaendig: [
+        "Ausstellung der BAföG-Leistungsbescheinigung (Formblatt 5)",
+        "Prüfung der regulären Studienfortschritte für das BAföG-Amt"
+      ],
+      source: "https://www.psychologie.uni-heidelberg.de/studium/a-z/bafoeg"
+    },
+    {
+      id: "pbs",
+      role: "PBS – Psychosoziale Beratung für Studierende",
+      name: "Studierendenwerk Heidelberg",
+      mail: "pbs@stw.uni-heidelberg.de",
+      tel: "+49 6221 54-3750",
+      room: "Gartenstraße 2, 69117 Heidelberg (Altstadt)",
+      hours: "Mo–Do 09:00–16:00 Uhr, Fr 09:00–14:00 Uhr (offene Telefonsprechzeit)",
+      zustaendig: [
+        "Prüfungsangst, Schreibblockaden & Prokrastination",
+        "Persönliche Krisen, depressive Verstimmungen & Stress",
+        "Kostenlose, vertrauliche und professionelle Beratung"
+      ],
+      source: "https://www.stw.uni-heidelberg.de/de/beratung"
+    },
+    {
+      id: "coaching",
+      role: "Coaching-Projekt (Studierende für Studierende)",
+      name: "Coaching-Team des Instituts",
+      mail: "coaching@psychologie.uni-heidelberg.de",
+      room: "Psychologisches Institut",
+      hours: "Nach Vereinbarung per E-Mail",
+      zustaendig: [
+        "Individuelles Studiencoaching durch ausgebildete Psychologiestudierende",
+        "Bis zu 10 persönliche Coaching-Sitzungen",
+        "Lernorganisation, Zielsetzung und Motivation"
+      ],
+      source: "https://www.psychologie.uni-heidelberg.de/studium/a-z/coaching-projekt"
+    },
+    {
+      id: "fachschaft",
+      role: "Fachschaft Psychologie (Studierendenvertretung)",
+      name: "Aktive Studierende der Fachschaft",
+      mail: "fachschaft@psychologie.uni-heidelberg.de",
+      room: "Fachschaftskeller (Friedrichsbau Hintergebäude UG)",
+      hours: "Jeden Montag um 18:00 Uhr (wöchentliche Sitzung – offen für alle Erstis!)",
+      zustaendig: [
+        "Studentische Interessenvertretung im Instituts- und Fakultätsrat",
+        "Organisation von Ersti-Wochenende, Hüttenfahrt, Psychoparty und Winterball",
+        "Tipps zum Studienstart auf Augenhöhe, Altklausuren & Dschungelbuch",
+        "Gemütliches Beisammensein im Fachschaftskeller"
+      ],
+      source: "https://www.psychologie.uni-heidelberg.de/studium/a-z/fachschaft"
+    }
   ],
 
   systems: [
-    { name: "heiCO", what: "Campus-Management: Kurse wählen (z. B. Übungsgruppen), Prüfungen, Studienbescheinigungen, ToR", link: "https://heico.uni-heidelberg.de" },
-    { name: "Uni-Mail (SOGo)", what: "Offizielle E-Mail-Adresse (@stud.uni-heidelberg.de) der Universität Heidelberg", link: "https://mail.uni-heidelberg.de" },
-    { name: "Moodle", what: "Zentrale Lernplattform: Folien, Materialien, Abgaben und Kursforen", link: "https://moodle.uni-heidelberg.de" },
-    { name: "YoKI (Uni-KI)", what: "Datenschutzkonforme, universitätseigene KI auf Uni-Servern (Open-Source LLMs wie Qwen)", link: "https://yoki.urz.uni-heidelberg.de" },
-    { name: "eduVPN & Cisco", what: "Zugriff aufs Uni-Netz von zu Hause (für Fachdatenbanken, YoKI & CIP-Pool)", link: "https://www.urz.uni-heidelberg.de/de/support/it-fuer-jede-zielgruppe/it-fuer-studierende" },
-    { name: "Eduroam (WLAN)", what: "Campus-WLAN – sicher vorkonfiguriert per CAT-Tool (cat.eduroam.org)", link: "https://cat.eduroam.org" },
+    { name: "heiCO", what: "Campus-Management: Kurse wählen (z. B. Übungsgruppen), Prüfungsanmeldung, Studienbescheinigungen, ToR", link: "https://heico.uni-heidelberg.de" },
+    { name: "Uni-Mail (SOGo)", what: "Offizielle E-Mail-Adresse (@stud.uni-heidelberg.de) der Universität Heidelberg", link: "https://sogo.uni-heidelberg.de/" },
+    { name: "Moodle", what: "Zentrale Lernplattform: Vorlesungsfolien, Materialien, Abgaben und Kursforen", link: "https://moodle.uni-heidelberg.de" },
+    { name: "YoKI (Uni-KI)", what: "Datenschutzkonforme, universitätseigene KI auf Servern des URZ (DSGVO-sicher, ohne Datenweitergabe)", link: "https://yoki.urz.uni-heidelberg.de" },
+    { name: "eduVPN & Cisco", what: "Sicherer Fernzugriff auf Fachliteratur, PsycINFO und Uni-Dienste von zu Hause", link: "https://www.urz.uni-heidelberg.de/de/support/it-fuer-jede-zielgruppe/it-fuer-studierende" },
+    { name: "Eduroam (WLAN)", what: "Campus-WLAN – sicher vorkonfiguriert per offiziellem CAT-Tool (cat.eduroam.org)", link: "https://cat.eduroam.org" },
     { name: "heiBOX Cloud", what: "30 GB kostenloser persönlicher Cloud-Speicher des URZ für Studierende", link: "https://heibox.uni-heidelberg.de/d/888790bfb3c64870b7da/" },
-    { name: "Microsoft 365", what: "Kostenfreie Campus-Lizenz für Office-Anwendungen (Word, Excel, PPT)", link: "https://www.urz.uni-heidelberg.de/de/service-katalog/arbeitsplatz-und-endgeraete/software-und-software-lizenzen/microsoft-campusabkommen" },
-    { name: "Campus-Card & Drucken", what: "Follow-Me Drucken/Kopieren in Bibliotheken, Mensakarte & Ausweis", link: "https://www.urz.uni-heidelberg.de/de/service-katalog/arbeitsplatz-und-endgeraete/druckausgabe-und-kopieren" },
-    { name: "HeiChat (Matrix)", what: "Verschlüsselter Uni-Messenger für Lerngruppen und Projekte", link: "https://heichat.uni-heidelberg.de" },
+    { name: "Microsoft 365", what: "Kostenfreie Campus-Lizenz für Office-Anwendungen (Word, Excel, PowerPoint, Teams via URZ/asknet)", link: "https://www.urz.uni-heidelberg.de/de/service-katalog/software-und-anwendungen/microsoft-hochschulrahmenvertrag" },
+    { name: "Campus-Card & Drucken", what: "Follow-Me Pull-Printing (Ricoh myPrint) an allen Uni-Druckern, Mensakarte & Ausweis", link: "https://www.urz.uni-heidelberg.de/de/service-katalog/drucken/oeffentliche-drucker-und-kopierer" },
+    { name: "HeiChat (Matrix)", what: "Verschlüsselter Uni-Messenger für Lerngruppen und studentische Projekte", link: "https://heichat.uni-heidelberg.de" },
     { name: "MFA-Portal", what: "Mehr-Faktor-Authentifizierung zur Absicherung deines Uni-ID-Accounts", link: "https://mfa.uni-heidelberg.de" }
   ],
 
@@ -405,31 +582,30 @@ window.ERSTI = {
     ["EKS", "Einführungs-Kompakt-Seminar – die Ersti-Woche am Psychologischen Institut"],
     ["KG", "Kleingruppe (mit studentischen Tutor:innen)"],
     ["AE", "Arbeitseinheit – die Forschungsabteilungen des Instituts"],
-    ["HS I / HS II", "Hörsaal I / Hörsaal II (HS II: Erdgeschoss im Hintergebäude)"],
-    ["UB", "Universitätsbibliothek"],
-    ["LP", "Leistungspunkte (ECTS). Der Bachelor umfasst 180 LP, also ca. 30 LP pro Semester"],
+    ["HS I / HS II", "Hörsaal I (1. OG) / Hörsaal II (EG) im Hintergebäude des Friedrichsbaus"],
+    ["UB", "Universitätsbibliothek Plöck (Altstadt)"],
+    ["LP", "Leistungspunkte (ECTS). Der Bachelor umfasst 180 LP, ca. 30 LP pro Semester"],
     ["V / Ü / S", "Vorlesung / Übung / Seminar"],
     ["EA", "Eigenarbeit"],
-    ["Vpn-Stunden", "Versuchspersonenstunden – du nimmst selbst an Studien teil (1 LP)"],
-    ["Empra", "Empirisches Projektseminar (Methoden 3, Semester 3–5)"],
-    ["polyvalent", "Der Bachelor hält beide Wege offen: approbationsrelevant (Psychotherapie) oder allgemein"],
-    ["approbationsrelevant", "Plan mit den Modulen, die für den späteren Weg zur Approbation als Psychotherapeut:in nötig sind (Ethik und Recht, Verfahrenslehre, Klinische Diagnostik, Medizinische Aspekte der PT, Gesprächsführung)"],
-    ["BQT I", "Berufspraktikum, im approbationsrelevanten Plan als BQT I bezeichnet (8 LP)"],
-    ["Comenius-Programm", "Freiwilliges Peer-Mentoring durch höhere Semester im 1. Semester (Anmeldung nötig)"],
-    ["Poster-Kongress", "Präsentation der Poster aus dem Empirischen Projektseminar"],
-    ["MES", "Master-Einführungs-Seminar (für Master-Erstis, nicht für dich)"],
-    ["FOV", "In den Unterlagen nicht erklärt – in der EKS nachfragen"],
-    ["AOV", "In den Unterlagen nicht erklärt – in der EKS nachfragen (Wahlbereich im allgemeinen Plan)"]
+    ["Vpn-Stunden", "Versuchspersonenstunden – du nimmst selbst an Studien teil (mind. 30 Std. = 1 LP)"],
+    ["Empra", "Empirisches Projektseminar (Methoden 3, Semester 3–5, 12 LP)"],
+    ["polyvalent", "Der polyvalente B.Sc. hält beide Wege offen: approbationsrelevant (Psychotherapie) oder allgemein"],
+    ["approbationsrelevant", "Studienplan mit den Modulen zur Approbation nach PsychThApprO (Ethik & Recht, Verfahrenslehre, Klinische Diagnostik, Med. Aspekte, Gesprächsführung)"],
+    ["BQT I", "Berufspraktikum (Berufsqualifizierende Tätigkeit I, 6 Wochen / 240 Std., 8 LP)"],
+    ["Comenius-Programm", "Freiwilliges Peer-Mentoring in Kleingruppen à 5–8 Studierende im 1. Semester (Kontakt: comenius@uni-hd.de)"],
+    ["Poster-Kongress", "Alljährlicher Empra-Kongress am Di 13.10. ab 14:00 Uhr in Foyer & HS II"],
+    ["MES", "Master-Einführungs-Seminar (für Master-Erstis, nicht für Bachelor-Erstis)"],
+    ["FOV", "Forschungsorientierte Vertiefung (Sem. 5–6, 2 × 4 LP) in Grundlagen- und Methodenbereichen"],
+    ["AOV", "Anwendungsorientierte Vertiefung (Sem. 5–6, AOV 1 & 2 je 8 LP; Option C ist approbationsrelevant)"],
+    ["F", "Friedrichsbau (Hauptstr. 47–51, Vorder- & Hintergebäude)"],
+    ["A", "Alte Anatomie (Hauptstr. 47–51, historischer Hof-Trakt)"],
+    ["P", "Pavillon (Akademiestr. 3, Gartengebäude)"]
   ],
 
   openQuestions: [
-    "Startzeit am 5.10.: Einladung sagt 9:00 Uhr, Wochenplan 9:15 Uhr.",
-    "Wofür stehen FOV und AOV, und wie wählt man die AOV-Schwerpunkte?",
-    "Wann genau ist die Party „Psychopathie“ (im Plan ohne Datum, vermutlich Do 15.10.)?",
-    "Poster-Kongress: Stellen das 4. oder das 5. Fachsemester aus?",
-    "Bis wann muss man sich zwischen approbationsrelevant und allgemein entscheiden? (Unterschied beginnt laut Plan im 4. Semester)",
-    "Wie und wo werden die Vpn-Stunden gesammelt und das Orientierungspraktikum anerkannt?",
-    "Wann und wie laufen die Comenius-Gruppen?"
+    "Startzeit am 5.10.: Einladung nennt 9:00 Uhr, Wochenplan 9:15 Uhr – lieber etwas früher da sein.",
+    "Wann genau ist der Einlass zur Party „Psychopathie“ (im Plan ab ca. 21:00 Uhr im Foyer)?",
+    "Genaue Raumzuteilung der Praxisfelder (KG-PF) am Donnerstag erfahren wir durch die Tutor:innen."
   ],
 
   sources: [

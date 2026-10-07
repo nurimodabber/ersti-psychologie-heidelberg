@@ -61,7 +61,7 @@
     <div class="site-footer-inner">
       <p><strong>Inoffizieller Studienbegleiter Psychologie (B.Sc.)</strong> · Universität Heidelberg · WiSe 2026/27</p>
       <p class="small muted">Keine offizielle Webseite der Universität Heidelberg. Alle Angaben ohne Gewähr – maßgeblich sind die offiziellen Informationen, Modulhandbücher und Prüfungsordnungen des Instituts.</p>
-      <p class="small muted">🔒 <strong>100% datenschutzfreundlich:</strong> Speicherung deiner Einstellungen, Vpn-Stunden, Häkchen &amp; To-dos erfolgt ausschließlich lokal in deinem Browser (localStorage). Keine Server-Datenbank, kein Tracking.</p>
+      <p class="small muted">🔒 <strong>100% datenschutzfreundlich:</strong> Speicherung deiner Einstellungen, Vpn-Stunden, Häkchen &amp; To-dos erfolgt ausschließlich lokal in deinem Browser (localStorage). Keine Server-Datenbank, kein Tracking. PsyBot antwortet standardmäßig 100 % lokal ohne Datenübertragung.</p>
     </div>
   </footer>
 
@@ -165,6 +165,14 @@
         </div>
       </div>
 
+      <div class="ai-privacy-bar">
+        <label class="ai-optin-label">
+          <input type="checkbox" id="aiOptIn">
+          <span>Externe KI-Unterstützung zulassen (anonymisiert)</span>
+        </label>
+        <div class="ai-optin-hint muted">Standardmäßig antwortet PsyBot 100 % lokal aus verifizierten Institutsdaten. Bei Aktivierung wird deine Einzelfrage ohne persönlichen Zustand (Stundenplan, Notizen, Häkchen) an ein externes Sprachmodell übermittelt.</div>
+      </div>
+
       <form class="ai-input-form" id="aiForm">
         <input type="text" id="aiInput" placeholder="Frage z. B. 'Wo trage ich Vpn ein?' oder 'Krankmeldung?' …" aria-label="Frage an PsyBot" autocomplete="off" required>
         <button type="submit" class="btn primary" id="aiSend" aria-label="Senden">
@@ -178,13 +186,14 @@
     <span class="ai-float-icon">✨</span>
     <span class="ai-float-text">
       <strong>Frag PsyBot</strong>
-      <small>Uni-Assistent · Ohne Login</small>
+      <small>Uni-Assistent · Lokal &amp; Datenschutz-sicher</small>
     </span>
   </button>
 
   <div id="toast" role="status" aria-live="polite"></div>
 
   <script src="js/data.js"></script>
+  <script src="js/data-knowledge.js"></script>
   <script src="js/data-extra.js"></script>
   <script src="js/app.js"></script>
 </body>

@@ -3,13 +3,16 @@
    Jede Angabe hat einen Link zur Originalquelle (src / page).
    ========================================================================== */
 (function (E) {
-  const HB = "https://backend.uni-heidelberg.de/de/dokumente/modulhandbuch-psychologie-ba-2024-01-17/download";
+  const HB_FOLDER = "https://heibox.uni-heidelberg.de/d/95707d86f0674bb2a781/";
+  const HB_FILE = "https://heibox.uni-heidelberg.de/d/95707d86f0674bb2a781/files/?p=/Modulhandbuch_BSc_Psych_17.01.24.pdf";
+  const HB = HB_FOLDER;
   const AZ = "https://www.psychologie.uni-heidelberg.de/studium/a-z/";
   const BOX = "https://heibox.uni-heidelberg.de/d/888790bfb3c64870b7da/files/?p=%2F";
 
   E.src = {
-    handbook: HB,
-    hbPage: (p) => `${HB}#page=${p}`,
+    handbook: HB_FILE,
+    handbookFolder: HB_FOLDER,
+    hbPage: (p) => `${HB_FILE}`,
     heibox: "https://heibox.uni-heidelberg.de/d/888790bfb3c64870b7da/",
     eksInvite: BOX + encodeURIComponent("1. EKS-Einladung_2026.pdf"),
     eksPlan: BOX + encodeURIComponent("1.1 EKS-Woche_Plan_2026.pdf"),
@@ -18,7 +21,7 @@
     plan6approb: BOX + encodeURIComponent("4. Studienplan_BSc_100%_approbationsrelevant_Regelstudienzeit 6 Sem.pdf"),
     plan8: BOX + encodeURIComponent("5. Studienplan_BSc_100%_allgemein_8Sem.pdf"),
     plan10: BOX + encodeURIComponent("6. Studienplan_BSc_100%_allgemein_10Sem.pdf"),
-    semester: "https://www.uni-heidelberg.de/en/study/management-of-studies/key-dates-deadlines/further-semester-dates",
+    semester: "https://www.uni-heidelberg.de/de/studium/studienorganisation/termine-und-fristen",
     institute: "https://www.psychologie.uni-heidelberg.de/",
     az: AZ,
     willkommenstag: "https://www.uni-heidelberg.de/de/studium/service-beratung/ins-studium-starten/willkommenstag"
@@ -125,19 +128,36 @@
       note: "Veranstaltungen außerhalb der Psychologie: je 2 SWS, an einer Uni bzw. anerkannten Hochschule, mit wissenschaftlichem Bezug." }
   ];
 
-  /* Wichtige Regeln & Fakten (mit Quelle) */
-  E.facts = [
-    { t: "Prüfungen", d: "Geprüft wird meist in Einzelprüfungen je Veranstaltung. Die genauen Modalitäten werden in der ersten Sitzung bekannt gegeben.", src: HB + "#page=7" },
-    { t: "Unbenotete Module", d: "Propädeutik, Methoden 3 (Empra), Orientierungs- und Berufspraktikum, Interdisziplinäre Kompetenzen, Präsentation eigener Forschung, Interdisziplinäre Studien.", src: HB },
-    { t: "Vpn-Stunden", d: "Mindestens 30 Stunden Teilnahme an psychologischen Experimenten – nachgewiesen und belegt (1 LP).", src: HB + "#page=8" },
-    { t: "Orientierungspraktikum", d: "4 Wochen Vollzeit (150 Std.), frei wählbar, Block oder studienbegleitend. Bescheinigung + Erfahrungsbericht. Frühere Praktika auf Antrag anrechenbar.", src: HB + "#page=26" },
-    { t: "Berufspraktikum (BQT I)", d: "6 Wochen (240 Std.), frühestens nach dem 1. Studienjahr, zwischen 3. und 6. Semester. Erfahrungsbericht.", src: HB + "#page=47" },
-    { t: "Empra (Methoden 3)", d: "Setzt bestandenes Methoden 2 voraus. Option: Start schon im 2. Semester in der Entwicklungspsychologie (begrenzte Plätze).", src: HB + "#page=14" },
-    { t: "Tauschoption", d: "Grundlagen 2 (Entwicklung) und Grundlagen 4 (Biologische Psychologie) können in der Reihenfolge getauscht werden.", src: HB + "#page=18" },
-    { t: "Approbationsweg", d: "Approbationsrelevant = Interdisziplinäre Kompetenzen Schwerpunkt 2 + AOV 1 und AOV 2 jeweils Option C (Klinische Psychologie und Psychotherapie).", src: HB + "#page=36" },
-    { t: "Teilzeit", d: "Vollzeitstudium; Teilzeitstudium ist auf Antrag möglich.", src: HB + "#page=1" },
-    { t: "Kursanmeldung", d: "Kurse, Übungen und Seminare wählst du in heiCO. Das komplette Lehrangebot findest du in heiCO unter der Kachel „Lehrangebot“.", src: "https://www.psychologie.uni-heidelberg.de/studium/a-z/veranstaltungsuebersicht" }
+  /* Wichtige Regeln & Fakten – dynamisch aus ERSTI_KNOWLEDGE gespeist */
+  const factIds = [
+    "orientierungspruefung",
+    "krankmeldung_attest",
+    "wiederholung_pruefungen",
+    "anwesenheitspflicht",
+    "freie_spitze",
+    "arbeiten_studium",
+    "maximalstudiendauer",
+    "teilzeitstudium",
+    "bachelorarbeit",
+    "praktika_ueberblick",
+    "master_studiengaenge",
+    "lernplaetze_bibliothek",
+    "it_yoki_ki",
+    "drucken_campuscard",
+    "comenius_mentoring"
   ];
+  E.facts = factIds.map(fid => {
+    const k = (window.ERSTI_KNOWLEDGE || []).find(x => x.id === fid);
+    if (!k) return null;
+    return {
+      t: k.title,
+      d: k.summary,
+      src: k.sources[0]?.url || HB_FOLDER,
+      knowledgeId: k.id,
+      status: k.status,
+      verifiedAt: k.verifiedAt
+    };
+  }).filter(Boolean);
 
   /* Linksammlung (Originalseiten zum Prüfen) */
   E.resources = [
@@ -146,79 +166,54 @@
       ["Studium von A bis Z", AZ],
       ["Bachelorstudiengang", "https://www.psychologie.uni-heidelberg.de/studium/bachelor/"],
       ["Aufbau des Bachelors", "https://www.psychologie.uni-heidelberg.de/studium/bachelor/aufbau/"],
-      ["Studienplan (A–Z)", AZ + "studienplan"],
-      ["Modulhandbuch B.Sc. (17.01.2024, PDF)", HB],
-      ["Semester- und Vorlesungszeiten (Institut)", "https://www.psychologie.uni-heidelberg.de/semester/"],
+      ["Dokumente & Ordnungen (heiBOX)", HB_FOLDER],
+      ["Modulhandbuch B.Sc. (PDF)", HB_FILE],
       ["Semestertermine der Uni", E.src.semester],
-      ["Veranstaltungsübersicht (→ heiCO „Lehrangebot“)", "https://www.psychologie.uni-heidelberg.de/studium/a-z/veranstaltungsuebersicht"],
-      ["heiCO – Kurse & Anmeldung", "https://heico.uni-heidelberg.de/heiCO/ee/ui/ca2/app/desktop/#/slc.tm.cp/student/courses"],
-      ["Abkürzungen", AZ + "abkuerzungen"],
-      ["c.t. / s.t. (akademische Zeit)", AZ + "ct-st-akademische-zeitangabe"],
-      ["Häufig gestellte Fragen", AZ + "haeufig-gestellte-fragen"],
-      ["Formulare und Dateien", AZ + "formulare-und-dateien"]
+      ["heiCO – Kurse & Anmeldung", "https://heico.uni-heidelberg.de"],
+      ["Abkürzungen", AZ + "#abkuerzungen"],
+      ["c.t. / s.t. (akademische Zeit)", AZ + "#ct-st-akademische-zeitangabe"],
+      ["Häufig gestellte Fragen (FAQ)", "https://www.psychologie.uni-heidelberg.de/studium/bachelor/faq/"]
     ]},
-    { cat: "Prüfungen & Anmeldung", links: [
-      ["Prüfungsamt", "https://www.psychologie.uni-heidelberg.de/studium/pruefungsamt/"],
-      ["Anmeldung zu den Klausuren (Vorlesungen)", AZ + "anmeldung-zu-den-klausuren-vorlesungen"],
-      ["Anmeldungen zu Seminaren", AZ + "anmeldungen-zu-seminaren"],
-      ["Seminarwahl", "https://www.psychologie.uni-heidelberg.de/studium/seminarwahl/"],
-      ["An-/Abmeldung von Veranstaltungen", AZ + "abmeldungen-von-veranstaltungen"],
-      ["Benotung", AZ + "benotung"],
-      ["Attest (Krankheit bei Prüfungen)", AZ + "attest"],
-      ["Anwesenheitspflicht", AZ + "anwesenheitspflicht"],
-      ["Anrechnung von Prüfungsleistungen", AZ + "anrechnung-von-pruefungsleistungen"],
-      ["Anmeldung der Bachelorarbeit", AZ + "anmeldung-der-bachelorarbeit-ba"],
-      ["Bachelorarbeit", AZ + "bachelorarbeit"],
-      ["Eigenständigkeitserklärung", AZ + "eigenstaendigkeitserklaerung"]
+    { cat: "Prüfungen & Fristen", links: [
+      ["Prüfungsamt Psychologie", "https://www.psychologie.uni-heidelberg.de/studium/pruefungsamt/"],
+      ["Prüfungsamt Kontakt & Sprechzeiten", "https://www.psychologie.uni-heidelberg.de/studium/pruefungsamt/kontakt/"],
+      ["Prüfungsausschuss", "https://www.psychologie.uni-heidelberg.de/studium/pruefungsamt/pruefungsausschuss/"],
+      ["Anmeldung zu Prüfungen (heiCO)", "https://heico.uni-heidelberg.de"],
+      ["Seminarwahl & -anmeldung", "https://www.psychologie.uni-heidelberg.de/studium/seminarwahl/"],
+      ["Attest & Krankmeldung", "https://www.psychologie.uni-heidelberg.de/studium/pruefungsamt/"],
+      ["Anwesenheitspflicht", AZ + "#Anwesenheitspflicht"],
+      ["Anerkennung von Leistungen", "https://www.psychologie.uni-heidelberg.de/studium/pruefungsamt/anerkennung/"],
+      ["Bachelorarbeit Richtlinien", "https://www.psychologie.uni-heidelberg.de/studium/pruefungsamt/abschlussarbeiten/"]
     ]},
     { cat: "Wahlbereiche & Praxis", links: [
-      ["AOV im B.Sc.", AZ + "aov-im-bsc"],
-      ["FOV im B.Sc.", AZ + "fov-im-bsc"],
-      ["Praktikum (Orientierungs- & Berufspraktikum)", "https://www.psychologie.uni-heidelberg.de/studium/praktikum/"],
+      ["Praktika B.Sc. (Übersicht)", "https://www.psychologie.uni-heidelberg.de/studium/praktikum/"],
+      ["Praktika Checklisten (heiBOX)", "https://heibox.uni-heidelberg.de/d/7dc87b81907742e5b557/"],
       ["Empirisches Praktikum (Empra)", "https://www.psychologie.uni-heidelberg.de/studium/empra/"],
-      ["Empirisches Praktikum – Kongress", AZ + "empirisches-praktikum-kongress"],
-      ["Arbeitseinheiten des Instituts", AZ + "arbeitseinheiten"],
-      ["Hiwi-Jobs", AZ + "hiwi"],
-      ["Arbeiten während des Studiums", AZ + "arbeiten-waehrend-des-studiums"],
-      ["Weg zur Psychotherapie (Approbation)", AZ + "ausbildung-zum-psychologischen-psychotherapeuten"],
-      ["Berufsmöglichkeiten", AZ + "berufsmoeglichkeiten"]
-    ]},
-    { cat: "Ausland", links: [
-      ["Auslandssemester", AZ + "auslandssemester"],
-      ["Auslandspraktikum", AZ + "auslandspraktikum"],
-      ["Erasmus", AZ + "erasmus"]
+      ["Arbeitseinheiten des Instituts", "https://www.psychologie.uni-heidelberg.de/ae/"],
+      ["Hiwi-Stellen & Ausschreibungen", "https://heibox.uni-heidelberg.de/d/3a9e41878141460c9468/"],
+      ["Arbeiten während des Studiums", AZ + "#arbeiten-waehrend-des-studiums"]
     ]},
     { cat: "Beratung & Unterstützung", links: [
-      ["Fachstudienberatung", AZ + "fachstudienberatung"],
-      ["Allgemeine Studienberatung", AZ + "allgemeine-studienberatung"],
-      ["Comenius-Programm (Peer-Mentoring)", AZ + "comenius-programm"],
-      ["EKS (Ersti-Woche)", AZ + "eks"],
-      ["Coaching-Projekt", AZ + "coaching-projekt"],
-      ["Behinderung & chronische Erkrankung", AZ + "behinderung"],
-      ["BAföG", AZ + "bafoeg"],
-      ["Finanzielle Förderung", AZ + "finanzielle-foerderungsmoeglichkeiten"],
-      ["Beurlaubung", AZ + "beurlaubung"],
-      ["Career Service", AZ + "career-service"]
+      ["Fachstudienberatung B.Sc.", AZ + "#fachstudienberatung"],
+      ["Comenius-Programm (Peer-Mentoring)", AZ + "#comenius-programm"],
+      ["Coaching-Projekt", AZ + "#coaching-projekt"],
+      ["Psychosoziale Beratung (PBS)", "https://www.stw.uni-heidelberg.de/de/beratung"],
+      ["BAföG-Beauftragte", AZ + "#bafoeg"],
+      ["Zentrale Studienberatung (ZSB)", "https://www.uni-heidelberg.de/de/studium/service-beratung/beratungsangebote-der-zentralen-studienberatung"]
     ]},
-    { cat: "Campus, IT & Bibliothek", links: [
-      ["Gebäude des Instituts", "https://www.psychologie.uni-heidelberg.de/willkomm/gebaeude/"],
-      ["Institutsbibliothek / Testothek", "https://www.psychologie.uni-heidelberg.de/service/bib/"],
-      ["Fachliteratur", AZ + "fachliteratur"],
-      ["CIP-Pool (PC-Raum)", AZ + "cip-pool"],
-      ["Arbeitsräume", AZ + "arbeitsraeume"],
-      ["Drucken", AZ + "drucken"],
-      ["E-Mail-Account", AZ + "e-mail-account"],
-      ["IT-Administration", "https://www.psychologie.uni-heidelberg.de/service/edv/"],
-      ["Campus Card", AZ + "campus-card"],
+    { cat: "Campus, IT & Lernorte", links: [
+      ["Gebäude des Instituts", AZ + "#Gebäude"],
+      ["Bibliothek & Testothek", "https://www.psychologie.uni-heidelberg.de/bibliothek/"],
+      ["Lern- und Arbeitsräume", AZ + "#Arbeitsräume"],
       ["URZ IT für Studierende", "https://www.urz.uni-heidelberg.de/de/support/it-fuer-jede-zielgruppe/it-fuer-studierende"],
       ["YoKI – Universitäre KI", "https://yoki.urz.uni-heidelberg.de/"],
-      ["eduroam CAT Tool (WLAN-Profile)", "https://cat.eduroam.org/"],
-      ["Sprachkurse & Hochschulsport", AZ + "anmeldungen-zu-sprachkursen-und-hochschulsport"]
+      ["Drucken mit Campus-Card (Ricoh)", "https://www.urz.uni-heidelberg.de/de/service-katalog/drucken/oeffentliche-drucker-und-kopierer"],
+      ["eduroam CAT Tool", "https://cat.eduroam.org/"],
+      ["Microsoft 365 Campus-Lizenz", "https://www.urz.uni-heidelberg.de/de/service-katalog/software-und-anwendungen/microsoft-hochschulrahmenvertrag"]
     ]},
-    { cat: "Studierende", links: [
-      ["Fachschaft (A–Z)", AZ + "fachschaft"],
-      ["Fachschaftskeller", AZ + "fachschaftskeller"],
-      ["Dschungelbuch", AZ + "dschungelbuch"],
+    { cat: "Studierendenvertretung", links: [
+      ["Fachschaft Psychologie", "https://www.psychologie.uni-heidelberg.de/studium/a-z/fachschaft"],
+      ["Fachschaftskeller", AZ + "#fachschaftskeller"],
       ["Willkommenstag der Uni", E.src.willkommenstag]
     ]},
     { cat: "Deine EKS-Unterlagen (heiBOX)", links: [
@@ -233,78 +228,86 @@
     ]}
   ];
 
-  /* Glossar: Lücken schließen + Quellen */
+  /* Glossar: Lücken schließen + A–Z Abkürzungen */
   const gl = Object.fromEntries(E.glossary);
   gl["FOV"] = "Forschungsorientierte Vertiefung (5.–6. Sem., 2 × 4 LP): Forschungsseminare in Allgemeiner, Entwicklungs-/Bio-, Differentieller, Sozialpsychologie oder Methodenlehre";
   gl["AOV"] = "Anwendungsorientierte Vertiefung (AOV 1 + AOV 2, je 8 LP, 5.–6. Sem.): Optionen A Päd. Psych., B Gesundheit, C Klinische Psych./Psychotherapie (approbationsrelevant, „AP“), D A&O";
   gl["KLF / PSQ"] = "Weitere Wahlalternativen laut Institutsseite: Kritische Lektüre (KLF), Personenbezogene Schlüsselqualifikationen (PSQ)";
-  gl["BQT I"] = "Berufsqualifizierende Tätigkeit I = Berufspraktikum (6 Wochen / 240 Std., 8 LP)";
+  gl["BQT I"] = "Berufsqualifizierende Tätigkeit I = Berufspraktikum (6 Wochen / 240 Std., 8 LP, frühestens nach 60 LP)";
   gl["Interdisziplinäre Kompetenzen"] = "Pflichtmodul (6 LP) mit zwei Schwerpunkten: wissenschaftliche oder psychotherapeutische Basiskompetenzen (Ethik & Recht, Medizinische Aspekte)";
+  gl["KliPP"] = "M.Sc. Klinische Psychologie und Psychotherapie (approbationskonformer Masterstudiengang am PI)";
+  gl["PFA"] = "M.Sc. Psychologie: Forschung und Anwendung (konsekutiver forschungsorientierter Master am PI)";
+  gl["KliPs"] = "Klinische Psychologie und Psychotherapie (Arbeitseinheit am Institut)";
+  gl["KiJu"] = "Klinische Psychologie des Kindes- und Jugendalters (Arbeitseinheit am Institut)";
+  gl["PäPs"] = "Pädagogische Psychologie (Arbeitseinheit am Institut)";
+  gl["Diff"] = "Differentielle Psychologie und Psychologische Diagnostik (Arbeitseinheit am Institut)";
+  gl["AO / A&O"] = "Arbeits- und Organisationspsychologie (Arbeitseinheit am Institut)";
+  gl["PI"] = "Psychologisches Institut der Universität Heidelberg (Hauptstraße 47–51)";
+  gl["UB"] = "Universitätsbibliothek Heidelberg (Plöck 107–109)";
+  gl["URZ"] = "Universitätsrechenzentrum (Im Neuenheimer Feld 293 / 330)";
+  gl["ZPP"] = "Zentrum für Psychologische Psychotherapie der Universität Heidelberg";
+  gl["F"] = "Friedrichsbau (Hauptstraße 47–51, Institutsgebäude mit Vorder- und Hintergebäude)";
+  gl["A"] = "Alte Anatomie (Hauptstraße 47–51, Hofgebäude, z. B. Übungsraum A102)";
+  gl["P"] = "Pavillon (Akademiestraße 3, Institutsgebäude im Anatomiegarten)";
   gl["SoSe / WiSe"] = "Sommersemester / Wintersemester";
   gl["SWS"] = "Semesterwochenstunden";
-  gl["PO"] = "Prüfungsordnung";
+  gl["PO"] = "Prüfungsordnung (maßgeblich: PO vom 12.07.2021)";
   gl["PsychThApprO"] = "Approbationsordnung für Psychotherapeutinnen und Psychotherapeuten";
   gl["c.t. / s.t."] = "cum tempore (Beginn 15 Min. später, z. B. 9 c.t. = 9:15) / sine tempore (pünktlich)";
   E.glossary = Object.entries(gl);
-  E.glossarySrc = { "FOV": AZ + "fov-im-bsc", "AOV": AZ + "aov-im-bsc", "KLF / PSQ": AZ + "aov-im-bsc", "c.t. / s.t.": AZ + "ct-st-akademische-zeitangabe",
-    "Comenius-Programm": AZ + "comenius-programm", "EKS": AZ + "eks", "LP": AZ + "ects-punkte-leistungspunkte-lp", "BQT I": HB + "#page=47",
-    "Interdisziplinäre Kompetenzen": HB + "#page=36", "Vpn-Stunden": HB + "#page=8", "Empra": HB + "#page=14", "AE": AZ + "arbeitseinheiten" };
+  E.glossarySrc = {
+    "FOV": AZ + "#fov-im-bsc",
+    "AOV": AZ + "#aov-im-bsc",
+    "KLF / PSQ": AZ + "#aov-im-bsc",
+    "c.t. / s.t.": AZ + "#ct-st-akademische-zeitangabe",
+    "Comenius-Programm": AZ + "#comenius-programm",
+    "EKS": AZ + "#eks",
+    "LP": AZ + "#ects-punkte-leistungspunkte-lp",
+    "BQT I": HB_FILE,
+    "Interdisziplinäre Kompetenzen": HB_FILE,
+    "Vpn-Stunden": HB_FILE,
+    "Empra": HB_FILE,
+    "AE": AZ + "#arbeitseinheiten",
+    "KliPP": "https://www.psychologie.uni-heidelberg.de/studium/bachelor/faq/",
+    "PFA": "https://www.psychologie.uni-heidelberg.de/studium/bachelor/faq/",
+    "F": AZ + "#Gebäude",
+    "A": AZ + "#Gebäude",
+    "P": AZ + "#Gebäude"
+  };
 
-  /* Offene Fragen aktualisieren (FOV/AOV jetzt geklärt) */
+  /* Offene Fragen: Vpn-Nachweis-Details */
   E.openQuestions = E.openQuestions.filter(q => !q.startsWith("Wofür stehen FOV"));
-  E.openQuestions.push("Wie werden Vpn-Stunden nachgewiesen (Formular/Portal)? Die Mindestzahl ist 30 Std.");
 
   /* ========================================================================
      STUDIEN-GUIDE: Lebensphasen, Regelungen & Offizielle Ressourcen
+     (referenziert ERSTI_KNOWLEDGE als Single Source of Truth)
      ======================================================================== */
   E.guideSections = [
     {
       id: "pruefungen",
       title: "Prüfungen & Fristen",
       icon: "📋",
-      desc: "Atteste, Klausurregeln, Wiederholungsfristen und die Orientierungsprüfung.",
+      desc: "Orientierungsprüfung, Atteste, Wiederholungsfristen und Anwesenheit.",
       items: [
-        {
-          title: "Krankmeldung & Attest bei Klausuren (3-Tage-Frist!)",
-          body: `<p>Wer wegen Krankheit eine Klausur nicht mitschreiben kann, muss unverzüglich handeln:</p>
-            <ul>
-              <li><strong>Frist:</strong> Spätestens <strong>innerhalb von 3 Tagen</strong> muss das ärztliche Attest zusammen mit dem Formular zur Prüfungsunfähigkeit im Prüfungsamt eingereicht werden.</li>
-              <li><strong>Einreichung:</strong> Entweder in das Postfach Nr. 55 im Institut werfen oder per E-Mail an <code>pruefungsamt@psychologie.uni-heidelberg.de</code> senden (Betreff: Matrikelnummer & Klausurname).</li>
-              <li><strong>Bestätigung:</strong> Das Prüfungsamt bestätigt den Eingang nicht manuell – du erhältst eine Benachrichtigung direkt über das <strong>heiCO-System</strong>.</li>
-            </ul>`,
-          link: "https://www.psychologie.uni-heidelberg.de/studium/pruefungsamt/",
-          linkText: "Prüfungsamt & Formulare"
-        },
-        {
-          title: "Orientierungsprüfung (§ 3 Abs. 4 PO)",
-          body: `<p>Die Orientierungsprüfung ist eine gesetzliche Pflichtprüfung zur Überprüfung der Studienorientierung:</p>
-            <ul>
-              <li><strong>Welche Klausur?</strong> Sie ist identisch mit der Abschlussklausur in <strong>Inferenzstatistik</strong> (Modul Methoden 1) am Ende des 2. Semesters.</li>
-              <li><strong>Frist & Versuche:</strong> Bei Nichtbestehen darf die Klausur <strong>nur einmal</strong> wiederholt werden und muss spätestens bis zum Ende des <strong>3. Fachsemesters</strong> bestanden sein!</li>
-              <li><strong>Achtung:</strong> Wird diese Frist versäumt, erlischt der Prüfungsanspruch im Bachelor Psychologie unwiderruflich.</li>
-            </ul>`,
-          link: "https://www.psychologie.uni-heidelberg.de/studium/zwischenpruefung/musterantworten",
-          linkText: "Musterantworten zur Orientierungsprüfung"
-        },
-        {
-          title: "Wiederholung von Prüfungsleistungen",
-          body: `<p>Nicht bestandene Prüfungsleistungen müssen <strong>spätestens innerhalb des folgenden Semesters</strong> nachgeholt werden.</p>
-            <div class="callout">
-              <strong>Wichtig:</strong> Im Falle einer nicht bestandenen Klausur meldet dich das Prüfungsamt in der Regel <em>automatisch</em> für den nächsten Nachholtermin an. Informiere dich frühzeitig bei den Dozierenden über das genaue Prüfungsformat.
-            </div>`
-        },
-        {
-          title: "Prüfungsamt: Sprechzeiten & E-Mail-Richtlinien",
-          body: `<p>Das Prüfungsamt (Raum F042, Hauptstr. 47) bearbeitet Leistungsübersichten, ToR, Krankmeldungen und Abschlussdokumente:</p>
-            <ul>
-              <li><strong>Offene Sprechstunde:</strong> Mo, Di, Do 10:00–11:30 Uhr · Fr 11:00–12:00 Uhr</li>
-              <li><strong>Telefon:</strong> 06221 / 54-7342 (Di 14:00–15:00 Uhr & Do 12:00–13:00 Uhr)</li>
-              <li><strong>E-Mail-Regel:</strong> Ausschließlich an <code>pruefungsamt@psychologie.uni-heidelberg.de</code> schreiben. Bei dringenden Fristen das Zieldatum in die Betreffzeile setzen und stets die <strong>Matrikelnummer</strong> angeben.</li>
-              <li><strong>Digitales Transcript (ToR):</strong> Kannst du dir jederzeit selbst online über heiCO als verifiziertes PDF herunterladen.</li>
-            </ul>`,
-          link: "https://www.psychologie.uni-heidelberg.de/studium/pruefungsamt/kontakt/",
-          linkText: "Prüfungsamt Kontakt & Sprechzeiten"
-        }
+        { knowledgeId: "orientierungspruefung" },
+        { knowledgeId: "krankmeldung_attest" },
+        { knowledgeId: "wiederholung_pruefungen" },
+        { knowledgeId: "automatische_pruefungsanmeldung" },
+        { knowledgeId: "anwesenheitspflicht" },
+        { knowledgeId: "pruefungszeitraum" }
+      ]
+    },
+    {
+      id: "studium",
+      title: "Studienaufbau & Regeln",
+      icon: "📊",
+      desc: "Freie Spitze, Regelstudienzeit, Teilzeit und Arbeiten während des Studiums.",
+      items: [
+        { knowledgeId: "freie_spitze" },
+        { knowledgeId: "maximalstudiendauer" },
+        { knowledgeId: "teilzeitstudium" },
+        { knowledgeId: "arbeiten_studium" },
+        { knowledgeId: "empra_poster_kongress" }
       ]
     },
     {
@@ -314,33 +317,25 @@
       desc: "30 Versuchspersonenstunden sammeln, Studienportal nutzen und das Empirische Praktikum meistern.",
       items: [
         {
+          knowledgeId: null,
           title: "30 Pflicht-Vpn-Stunden (1 LP im Propädeutik-Modul)",
-          body: `<p>Im Bachelor muss jede/r Studierende an psychologischen Studien als Versuchsperson teilnehmen, um experimentelle Forschung aus Teilnehmerperspektive kennenzulernen:</p>
+          body: `<p>Im Bachelor muss jede:r Studierende an psychologischen Studien als Versuchsperson teilnehmen (1 LP):</p>
             <ul>
-              <li><strong>Umfang:</strong> Insgesamt <strong>30 Stunden</strong> (entspricht 1 LP).</li>
-              <li><strong>Laufzettel:</strong> Die Vpn-Bestätigungszettel liegen an den Öffnungstagen vor der Tür des Prüfungsamts (Raum F042) zum Mitnehmen aus.</li>
-              <li><strong>Ablauf:</strong> Nach jeder Teilnahme lässt du dir Datum, Studie und Dauer von den Versuchsleiter:innen gegenzeichnen. Vollständige Zettel werden im Prüfungsamt eingereicht.</li>
+              <li><strong>Umfang:</strong> Mindestens <strong>30 Stunden</strong>.</li>
+              <li><strong>Laufzettel:</strong> Vor der Tür des Prüfungsamts (Raum F042) zum Mitnehmen.</li>
+              <li><strong>Ablauf:</strong> Nach jeder Studie gegenzeichnen lassen. Vollständige Zettel am Semesterende im Prüfungsamt einreichen.</li>
             </ul>`,
           link: "https://studienportal.psychologie.uni-heidelberg.de/",
-          linkText: "Zum Studienportal des Instituts"
+          linkText: "Zum Studienportal des Instituts ↗"
         },
         {
+          knowledgeId: null,
           title: "Das Studienportal der Universität Heidelberg",
-          body: `<p>Über das institutseigene <strong>Studienportal</strong> kannst du dich kostenlos registrieren und dir freie Timeslots für psychologische Studien (Online, Labor, Eyetracking, EEG etc.) buchen. Später kannst du hier auch eigene Studien für dein Empra oder deine Bachelorarbeit ausschreiben.</p>`,
+          body: `<p>Über das Heidelberger Studienportal kannst du dich registrieren und freie Termine für experimentelle Studien (Online, Labor, Eyetracking, EEG) buchen.</p>`,
           link: "https://studienportal.psychologie.uni-heidelberg.de/",
           linkText: "studienportal.psychologie.uni-heidelberg.de ↗"
         },
-        {
-          title: "Empirisches Arbeiten: Empra (Methoden 3)",
-          body: `<p>Das Empra erstreckt sich vom 3. bis zum 5. Semester (12 LP, unbenotet):</p>
-            <ul>
-              <li><strong>Voraussetzung:</strong> Erfolgreicher Abschluss des Moduls Methoden 2 (Versuchsplanung).</li>
-              <li><strong>Projektseminare 1 & 2:</strong> In Kleingruppen konzipiert ihr eine eigene empirische Untersuchung, erhebt Daten und wertet diese mit R oder SPSS aus.</li>
-              <li><strong>Poster-Kongress:</strong> Zu Beginn jedes Wintersemesters präsentieren alle Gruppen ihre Forschungsarbeiten auf dem öffentlichen <em>EmPra-Kongress</em> im Institut, auf dem auch Preise verliehen werden.</li>
-            </ul>`,
-          link: "https://www.psychologie.uni-heidelberg.de/studium/empra/",
-          linkText: "Offizielle EmPra-Infoseite"
-        }
+        { knowledgeId: "empra_poster_kongress" }
       ]
     },
     {
@@ -349,141 +344,44 @@
       icon: "💼",
       desc: "Orientierungspraktikum, berufsqualifizierende Tätigkeit (BQT I) und Approbationskriterien.",
       items: [
-        {
-          title: "Orientierungspraktikum (5 LP)",
-          body: `<p>Dient dem Kennenlernen psychologischer Berufsfelder in einer frühen Studienphase:</p>
-            <ul>
-              <li><strong>Dauer:</strong> 4 Wochen Vollzeit bzw. <strong>150 Arbeitsstunden</strong>.</li>
-              <li><strong>Zeitpunkt:</strong> Frei wählbar, meist in der vorlesungsfreien Zeit der ersten beiden Semester (Block oder studienbegleitend).</li>
-              <li><strong>Leistungsnachweis:</strong> Praktikumsbescheinigung der Institution + schriftlicher Erfahrungsbericht (unbenotet).</li>
-              <li><strong>Anrechnung:</strong> Einschlägige Praktika vor Studienbeginn können auf Antrag von Fachstudienberaterin Stefanie Glawe anerkannt werden.</li>
-            </ul>`,
-          link: "https://www.psychologie.uni-heidelberg.de/studium/praktikum/",
-          linkText: "Praktikumsleitfaden & Formulare"
-        },
-        {
-          title: "Berufspraktikum / BQT I (8 LP)",
-          body: `<p>Vertieftes Fachpraktikum (Berufsqualifizierende Tätigkeit I):</p>
-            <ul>
-              <li><strong>Dauer:</strong> Mindestens 6 Wochen bzw. <strong>240 Arbeitsstunden</strong>.</li>
-              <li><strong>Voraussetzung:</strong> Frühestens nach dem 1. Studienjahr (in der Regel zwischen dem 3. und 6. Semester).</li>
-              <li><strong>Für den Psychotherapie-Weg (Approbation):</strong> Muss in einer anerkannten klinischen Einrichtung unter Aufsicht approbierter Psychotherapeut:innen absolviert werden. Die Kriterien der PsychThApprO müssen exakt erfüllt sein.</li>
-            </ul>`,
-          link: "https://www.psychologie.uni-heidelberg.de/studium/pruefungsamt/praktika/",
-          linkText: "Prüfungsamt: Praktikumsrichtlinien & Genehmigung"
-        }
+        { knowledgeId: "praktika_ueberblick" }
       ]
     },
     {
       id: "tools",
-      title: "Bibliothek, Testothek & IT",
+      title: "Lernorte, Testothek & IT",
       icon: "📚",
-      desc: "Arbeitsplätze, Testverfahren ausleihen, Buchscanner und Campus-Netzwerkzugang.",
+      desc: "Arbeitsplätze, Testothek, Buchscanner, YoKI und Netzwerkzugang.",
       items: [
-        {
-          title: "Institutsbibliothek & neue UB-Lernplätze",
-          body: `<p>Die Institutsbibliothek an der Hauptstraße 47–51 bietet einen ruhigen Lernort im Herzen der Altstadt:</p>
-            <ul>
-              <li><strong>Bestand:</strong> Rund 6.000 Monografien als Präsenzbestand. Ausleihe erfolgt über die zentrale Universitätsbibliothek (UB Plöck).</li>
-              <li><strong>Neue Arbeitsplätze:</strong> Im großen Saal stehen renovierte Arbeitsplätze mit WLAN und Stromversorgung bereit. Der Einlass erfolgt elektronisch über deine <strong>Campus-Card</strong>.</li>
-            </ul>`,
-          link: "https://www.psychologie.uni-heidelberg.de/service/bib/",
-          linkText: "Bibliothek & Öffnungszeiten"
-        },
-        {
-          title: "Testothek: Psychologische Testverfahren ausleihen",
-          body: `<p>Die Testothek befindet sich im Vordergebäude in den Räumen <strong>019–021 (Zwischengeschoss)</strong>:</p>
-            <ul>
-              <li><strong>Angebot:</strong> Über 1.000 psychologische Testverfahren (Intelligenz-, Persönlichkeits- und klinische Diagnostik) sowie Testhandbücher und Fragebögen.</li>
-              <li><strong>Ausleihe:</strong> Exklusiv für Studierende des Psychologischen Instituts für Diagnostik-Seminare, Empra und Abschlussarbeiten.</li>
-              <li><strong>Kontakt:</strong> Frau Marianne Beschorner (Tel: 06221 / 54-7275).</li>
-            </ul>`,
-          link: "https://www.psychologie.uni-heidelberg.de/service/bib/",
-          linkText: "Testothek Details"
-        },
-        {
-          title: "Kostenloser Buchscanner (F015) & CIP-Pool",
-          body: `<p>Praktische Tools für Seminararbeiten und Datenanalysen:</p>
-            <ul>
-              <li><strong>Buchaufsichtscanner:</strong> Während der Bauarbeiten in <strong>Raum F015</strong> (bei Herrn Kulczynski) aufgestellt. Buchschonendes Scannen mit automatischer Falzkorrektur – PDF-Speicherung direkt auf USB-Stick mit optionaler OCR-Texterkennung.</li>
-              <li><strong>CIP-Pool & Remote Desktop:</strong> Vom heimischen Laptop aus kannst du dich per Remotedesktop auf die Institutsrechner einwählen, um Softwarelizenzen (SPSS, AMOS, RStudio) im Uni-Netzwerk zu nutzen.</li>
-            </ul>`,
-          link: "https://www.psychologie.uni-heidelberg.de/service/edv/",
-          linkText: "IT-Service & Wissensdatenbank"
-        },
-        {
-          title: "YoKI – Die universitätseigene KI (Datenschutzkonform)",
-          body: `<p>Die Universität Heidelberg betreibt unter <code>yoki.urz.uni-heidelberg.de</code> eine eigene, datenschutzkonforme KI-Plattform:</p>
-            <ul>
-              <li><strong>Datenschutz:</strong> Deine Eingaben und Texte verlassen nicht das Heidelberger Rechenzentrum. Sie werden <em>nicht</em> zum Trainieren kommerzieller Modelle verwendet.</li>
-              <li><strong>Modelle:</strong> Aktuelle Open-Source Large Language Models (u. a. Qwen 2.5 / 3) für Textüberarbeitung, Literaturzusammenfassungen und Coding.</li>
-              <li><strong>Zugang:</strong> Kostenlos für alle immatrikulierten Studierenden mit Uni-ID. Voraussetzung ist eine Verbindung im Campus-Netz (eduroam) oder über Uni-VPN von zu Hause.</li>
-            </ul>`,
-          link: "https://yoki.urz.uni-heidelberg.de/",
-          linkText: "Zu YoKI (yoki.urz.uni-heidelberg.de) ↗"
-        },
-        {
-          title: "eduVPN & Cisco Secure Client (Netzwerkzugang von daheim)",
-          body: `<p>Für den Zugriff auf Fachdatenbanken (APA PsycNet, SpringerLink, Hogrefe), YoKI und Zeitschriften-Volltexte von zu Hause benötigst du VPN:</p>
-            <ul>
-              <li><strong>Empfehlung des URZ:</strong> <strong>eduVPN</strong> ist der moderne, schlanke Open-Source-Client (erhältlich für macOS, Windows, iOS, Android). Einfach „Universität Heidelberg“ wählen und mit Uni-ID anmelden.</li>
-              <li><strong>Alternative:</strong> Der klassische <em>Cisco Secure Client</em> über Server <code>vpn-ac.urz.uni-heidelberg.de</code>.</li>
-              <li><strong>Tipp:</strong> Verbinde dein VPN, bevor du im Bibliothekskatalog HEIDI nach Fachliteratur suchst, um sofort Volltext-PDFs öffnen zu können.</li>
-            </ul>`,
-          link: "https://www.urz.uni-heidelberg.de/de/support/it-fuer-jede-zielgruppe/it-fuer-studierende",
-          linkText: "URZ: VPN-Einrichtungsanleitung"
-        },
-        {
-          title: "eduroam Campus-WLAN: Immer über das CAT-Tool!",
-          body: `<p>Verbinde dich im WLAN niemals mit der manuellen Eingabe deines Passworts ohne Profil:</p>
-            <ul>
-              <li><strong>Sichere Einrichtung:</strong> Besuche <strong>cat.eduroam.org</strong> und lade das offizielle Konfigurationsprofil für dein Betriebssystem herunter.</li>
-              <li><strong>Benutzername:</strong> Immer <code>&lt;Uni-ID&gt;@uni-heidelberg.de</code> (z. B. <code>ab123@uni-heidelberg.de</code> – nicht deine E-Mail-Adresse!).</li>
-              <li><strong>Warum CAT?</strong> Das Profil hinterlegt das kryptografische Wurzelzertifikat der Uni, sodass niemand deine Zugangsdaten durch gefälschte Hotspots abfangen kann.</li>
-            </ul>`,
-          link: "https://cat.eduroam.org/",
-          linkText: "cat.eduroam.org Konfigurations-Tool ↗"
-        },
-        {
-          title: "Microsoft 365 Campus-Lizenz & Software",
-          body: `<p>Über das Campusabkommen des URZ erhalten immatrikulierte Studierende kostenlose bzw. stark vergünstigte Lizenzen:</p>
-            <ul>
-              <li><strong>Microsoft 365:</strong> Word, Excel, PowerPoint, OneDrive und Teams für bis zu 5 Endgeräte. Registrierung erfolgt über das asknet-Studierendenportal der Uni Heidelberg.</li>
-              <li><strong>Statistiksoftware:</strong> <em>R & RStudio</em> sowie <em>JASP / Jamovi</em> sind ohnehin kostenlose Open-Source-Tools. <em>SPSS</em> und <em>AMOS</em> stehen im CIP-Pool und via Remote Desktop zur Verfügung.</li>
-              <li><strong>Follow-Me-Drucken:</strong> Mit deiner Campus-Card kannst du Druckaufträge online über <code>qpilot.urz.uni-heidelberg.de</code> absenden und an jedem beliebigen Multifunktionsdrucker in der UB oder am Institut abholen.</li>
-            </ul>`,
-          link: "https://www.urz.uni-heidelberg.de/de/service-katalog/arbeitsplatz-und-endgeraete/software-und-software-lizenzen/microsoft-campusabkommen",
-          linkText: "URZ: Microsoft 365 für Studierende"
-        }
+        { knowledgeId: "lernplaetze_bibliothek" },
+        { knowledgeId: "testothek_scanner" },
+        { knowledgeId: "it_yoki_ki" },
+        { knowledgeId: "drucken_campuscard" },
+        { knowledgeId: "cip_pool_aufgeloest" },
+        { knowledgeId: "vpn_eduvpn" }
+      ]
+    },
+    {
+      id: "leben",
+      title: "Campus, Community & Erste Hilfe",
+      icon: "🏛️",
+      desc: "Comenius-Mentoring, Fachschaft, Erste Hilfe und Institutszeiten.",
+      items: [
+        { knowledgeId: "comenius_mentoring" },
+        { knowledgeId: "fachschaft_psychologie" },
+        { knowledgeId: "erste_hilfe_f017" },
+        { knowledgeId: "gebaeude_raumcodes" },
+        { knowledgeId: "oeffnungszeiten_institut" }
       ]
     },
     {
       id: "abschluss",
-      title: "Bachelorarbeit & Abschluss",
+      title: "Bachelorarbeit & Master",
       icon: "🎓",
-      desc: "Voraussetzungen, doppelte Notengewichtung (Faktor 2), Zweier-Teams und Master-Übergang.",
+      desc: "Voraussetzungen, doppelte Notengewichtung (Faktor 2), Zweier-Teams und Master KliPP / PFA.",
       items: [
-        {
-          title: "Die Bachelorarbeit (12 LP) – 2-fache Gewichtung!",
-          body: `<p>Die Bachelorarbeit ist die zentrale Abschlussarbeit deines Studiums:</p>
-            <ul>
-              <li><strong>Notengewichtung:</strong> Im Gegensatz zu allen anderen Modulen zählt die Bachelorarbeit bei der Gesamtnote mit dem <strong>Faktor 2</strong>!</li>
-              <li><strong>Gruppenarbeit:</strong> Nach § 16 der Prüfungsordnung kann die Bachelorarbeit auch in einer <strong>Zweiergruppe</strong> verfasst werden, wenn der individuelle Beitrag klar abgrenzbar ist.</li>
-              <li><strong>Themenfindung:</strong> Themen werden in den Arbeitseinheiten (AEs) angeboten oder können im Rahmen laufender Forschungsprojekte eigeninitiativ abgesprochen werden.</li>
-            </ul>`,
-          link: "https://www.psychologie.uni-heidelberg.de/studium/pruefungsamt/abschlussarbeiten/",
-          linkText: "Prüfungsamt: Anmeldung der Bachelorarbeit"
-        },
-        {
-          title: "Master-Übergang: M.Sc. Klinische Psychologie & M.Sc. Psychologie",
-          body: `<p>In Heidelberg bestehen zwei Masterstudiengänge:</p>
-            <ul>
-              <li><strong>M.Sc. Klinische Psychologie und Psychotherapie:</strong> Erfordert den approbationskonformen Bachelor-Abschluss. Studierende im B.Sc. 100% nach PO 2021 mit den entsprechenden Wahlmodulen (Interdisz. Kompetenzen Schwerpunkt 2 + Verfahrenslehre + Klin. Diagnostik) erfüllen automatisch die Kriterien der Kategorie A.</li>
-              <li><strong>M.Sc. Psychologie (Forschung & Schwerpunkte):</strong> Vertiefung in Kognitionspsychologie, Entwicklungspsychologie, Arbeits- und Organisationspsychologie oder Methodenlehre.</li>
-            </ul>`,
-          link: "https://www.psychologie.uni-heidelberg.de/studium/master/",
-          linkText: "Masterangebote am Institut"
-        }
+        { knowledgeId: "bachelorarbeit" },
+        { knowledgeId: "master_studiengaenge" }
       ]
     }
   ];

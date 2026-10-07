@@ -20,7 +20,8 @@
     plan: "6-approb", currentSem: 1, catFilter: "all",
     done: {}, todosDone: {}, customTodos: [], eksDay: null,
     theme: "auto", vpnHours: 0, vpnList: [], guideSec: "pruefungen",
-    calView: "month", calDate: null, calFilter: "all", calOnlyMine: false
+    calView: "month", calDate: null, calFilter: "all", calOnlyMine: false,
+    aiOptIn: false
   };
   let state = load();
 
@@ -2092,18 +2093,34 @@
           </div>
           <p class="muted">${esc(activeSec.desc)}</p>
         </div>
-        ${activeSec.items.map(item => `
-          <div class="card guide-card">
-            <h3>${esc(item.title)}</h3>
-            <div>${item.body}</div>
-            ${item.link ? `<div style="margin-top:.85rem"><a class="btn" href="${esc(item.link)}" target="_blank" rel="noopener">${esc(item.linkText || "Offizielle Seite öffnen")} ↗</a></div>` : ""}
-          </div>
-        `).join("")}
+        ${activeSec.items.map(item => {
+          const k = item.knowledgeId ? (window.ERSTI_KNOWLEDGE || []).find(x => x.id === item.knowledgeId) : null;
+          const title = k ? k.title : item.title;
+          const bodyHtml = k ? (k.bodyHtml || `<p>${esc(k.summary)}</p>`) : item.body;
+          const link = k ? (k.sources && k.sources[0]?.url) : item.link;
+          const linkText = k ? (k.sources && k.sources[0]?.title) : (item.linkText || "Offizielle Quelle öffnen");
+          const isUnbestaetigt = k && k.status === "unbestaetigt";
+          const stand = k ? k.verifiedAt : null;
+
+          return `
+            <div class="card guide-card">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;flex-wrap:wrap;margin-bottom:.5rem">
+                <h3 style="margin:0">${esc(title)}</h3>
+                ${isUnbestaetigt ? `<span class="badge-unbestaetigt" title="Diese Information ist noch nicht amtlich bestätigt – bitte im Institut verifizieren">⚠️ Unbestätigt</span>` : (k ? `<span class="badge-offiziell">✓ Offiziell verifiziert</span>` : "")}
+              </div>
+              <div>${bodyHtml}</div>
+              ${link ? `
+                <div class="card-source-bar">
+                  <span class="muted">${stand ? `Stand: ${esc(stand)}` : "Offizielle Quelle"}</span>
+                  <a class="card-source-link" href="${esc(link)}" target="_blank" rel="noopener">${esc(linkText)} ↗</a>
+                </div>` : ""}
+            </div>`;
+        }).join("")}
       </div>
       <div class="card" style="margin-top:1.5rem">
         <div class="card-head">
           <h3>Noch Fragen oder Unklarheiten?</h3>
-          <a class="btn" href="#infos">Alle Kontakte & Orte</a>
+          <a class="btn" href="#infos">Alle Kontakte &amp; Ansprechpersonen</a>
         </div>
         <p class="small muted">
           Du kannst dich jederzeit an die Fachstudienberatung (Stefanie Glawe), das Prüfungsamt (F042) oder die Fachschaft Psychologie wenden.
@@ -2124,31 +2141,188 @@
      ======================================================================== */
   function renderInfos(el) {
     el.innerHTML = `
-      <div class="page-head"><h1>Infos</h1><p>Kontakte, Orte, Uni-Systeme, Abkürzungen und was noch offen ist.</p></div>
-      <div class="grid grid-2">
-        <div class="card"><div class="card-head"><h2>Kontakte</h2>${srcLink("https://www.psychologie.uni-heidelberg.de/studium/a-z/fachstudienberatung", "Fachstudienberatung")}</div><dl class="kv">${D.contacts.map(c => `<dt>${esc(c.role)}</dt><dd>${
-          c.mail ? `<a href="mailto:${esc(c.mail)}">${esc(c.name)}</a>`
-          : c.tel ? `<a href="tel:${esc(c.tel.replace(/\s/g, ""))}">${esc(c.name)}</a>`
-          : c.role === "Adresse" ? `<a href="${mapLink(c.name)}" target="_blank" rel="noopener" title="Auf Google Maps öffnen">📍 ${esc(c.name)} ↗</a>`
-          : esc(c.name)
-        }${c.extra ? `<div class="small">${esc(c.extra)}</div>` : ""}</dd>`).join("")}</dl></div>
-        <div class="card"><h2>Uni-Systeme</h2><dl class="kv">${D.systems.map(s => `<dt>${s.link ? `<a href="${esc(s.link)}" target="_blank" rel="noopener">${esc(s.name)}</a>` : esc(s.name)}</dt><dd>${esc(s.what)}</dd>`).join("")}</dl>
-          <p class="small muted" style="margin-top:.8rem">Einrichtung gemeinsam in der IT-Einführung am Di 6.10. um 14:15 Uhr – Gerät mitbringen.</p></div>
-        <div class="card"><h2>Orte</h2><ul class="place-list">${Object.entries(D.places).map(([k, p]) => `<li><a class="place-name-link" href="${mapLink(p.map || `${p.name}, Heidelberg`)}" target="_blank" rel="noopener" title="Auf Google Maps öffnen"><b>${esc(p.name)}</b> <span class="muted small">(${esc(k)})</span></a><div class="small muted">${esc(p.desc)}</div><a class="small" href="${mapLink(p.map || `${p.name}, Heidelberg`)}" target="_blank" rel="noopener">In Google Maps öffnen ↗</a></li>`).join("")}</ul></div>
-        <div class="card"><h2>Abkürzungen</h2>
-          <input class="search" type="text" placeholder="Suchen, z. B. LP oder Empra" aria-label="Glossar durchsuchen" data-gsearch>
-          <dl class="kv" data-glossary>${glossaryHtml("")}</dl></div>
-        <div class="card"><h2>Regeln, die du kennen solltest</h2><dl class="kv">${D.facts.map(f => `<dt>${esc(f.t)}</dt><dd>${esc(f.d)} ${srcLink(f.src)}</dd>`).join("")}</dl></div>
-        <div class="card"><h2>Offene Fragen für die EKS</h2><p class="small muted">Diese Punkte sind in den Unterlagen widersprüchlich oder nicht erklärt.</p><ol class="qa">${D.openQuestions.map(q => `<li>${esc(q)}</li>`).join("")}</ol></div>
-        <div class="card"><h2>Quellen</h2><p class="small">Alle Inhalte stammen aus dem heiBOX-Ordner <a href="${esc(D.meta.heibox)}" target="_blank" rel="noopener">EKS_Materialien_Erstis</a> (Stand ${esc(D.meta.stand)}). Kurzfristige Änderungen sind möglich – im Zweifel gilt der Ordner.</p>
-          <ul class="qa small">${D.sources.map(s => `<li>${s.link ? `<a href="${esc(s.link)}" target="_blank" rel="noopener">${esc(s.title)}</a>` : esc(s.title)} <span class="muted">– ${esc(s.desc)}</span></li>`).join("")}</ul></div>
+      <div class="page-head">
+        <h1>Infos &amp; Ansprechpersonen</h1>
+        <p>Kontakte, Gebäude &amp; Räume, IT-Systeme, Glossar und verifizierte Primärquellen.</p>
       </div>
-      <div class="card" style="margin-top:1rem">
-        <div class="card-head"><h2>Alle Links zu den Originalseiten</h2>${srcLink(D.src.az, "Studium A–Z")}</div>
-        <p class="muted small">Zum Nachprüfen: Alles auf dieser Seite stammt aus diesen Quellen.</p>
-      </div>`;
+      ${renderRouterHtml()}
+      <div class="grid grid-2">
+        <div class="card" id="contactsCard">
+          <div class="card-head">
+            <h2>Kontakte &amp; Ansprechpersonen</h2>
+            ${srcLink("https://www.psychologie.uni-heidelberg.de/funktion/", "Funktionen am PI")}
+          </div>
+          <div class="contact-list" style="display:flex;flex-direction:column;gap:1rem;margin-top:.75rem">
+            ${D.contacts.map(c => `
+              <div class="contact-card" id="contact-${esc(c.id || '')}" style="padding:.9rem;background:var(--sandstone);border-radius:var(--rad);box-shadow:var(--sh-out-sm)">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.3rem">
+                  <strong style="font-size:.95rem">${esc(c.role)}</strong>
+                  ${c.source ? `<a class="small muted" href="${esc(c.source)}" target="_blank" rel="noopener">Quelle ↗</a>` : ""}
+                </div>
+                <div style="font-weight:600;color:var(--water);margin:.2rem 0 .4rem">${esc(c.name)}</div>
+                ${c.room ? `<div class="small">📍 <strong>Raum:</strong> ${esc(c.room)}</div>` : ""}
+                ${c.hours ? `<div class="small">🕒 <strong>Sprechzeiten:</strong> ${esc(c.hours)}</div>` : ""}
+                ${c.tel ? `<div class="small">📞 <strong>Tel:</strong> <a href="tel:${esc(c.tel.replace(/\s/g, ""))}">${esc(c.tel)}</a></div>` : ""}
+                ${c.mail ? `<div class="small">✉️ <strong>E-Mail:</strong> <a href="mailto:${esc(c.mail)}">${esc(c.mail)}</a></div>` : ""}
+                ${c.postfach ? `<div class="small">📮 <strong>Postfach:</strong> ${esc(c.postfach)}</div>` : ""}
+                ${(c.zustaendig && c.zustaendig.length) ? `
+                  <div style="margin-top:.5rem;padding-top:.4rem;border-top:1px solid rgba(181,161,138,.3)">
+                    <small class="muted" style="display:block;margin-bottom:.2rem"><strong>Zuständig für:</strong></small>
+                    <div style="display:flex;flex-wrap:wrap;gap:.3rem">
+                      ${c.zustaendig.map(z => `<span class="badge" style="font-size:.68rem;padding:1px 6px">${esc(z)}</span>`).join("")}
+                    </div>
+                  </div>` : ""}
+              </div>
+            `).join("")}
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Uni-Systeme &amp; IT</h2>
+          <dl class="kv">${D.systems.map(s => `<dt>${s.link ? `<a href="${esc(s.link)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>` : esc(s.name)}</dt><dd>${esc(s.what)}</dd>`).join("")}</dl>
+          <p class="small muted" style="margin-top:.8rem">IT-Einführung der EKS am Di 6.10. um 14:15 Uhr – Laptop oder Tablet mitbringen.</p>
+        </div>
+
+        <div class="card">
+          <h2>Orte &amp; Gebäude (F, A, P)</h2>
+          <p class="small muted" style="margin-bottom:.75rem">
+            <strong>F</strong> = Friedrichsbau (Hauptstr. 47–51) · <strong>A</strong> = Alte Anatomie · <strong>P</strong> = Pavillon (Akademiestr. 3)
+          </p>
+          <ul class="place-list">${Object.entries(D.places).map(([k, p]) => `
+            <li>
+              <a class="place-name-link" href="${mapLink(p.map || `${p.name}, Heidelberg`)}" target="_blank" rel="noopener" title="Auf Google Maps öffnen">
+                <b>${esc(p.name)}</b> <span class="muted small">(${esc(k)})</span>
+              </a>
+              <div class="small muted">${esc(p.desc)}</div>
+              <a class="small" href="${mapLink(p.map || `${p.name}, Heidelberg`)}" target="_blank" rel="noopener">In Google Maps öffnen ↗</a>
+            </li>`).join("")}
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2>Abkürzungen &amp; Glossar</h2>
+          <input class="search" type="text" placeholder="Suchen, z. B. KliPP, AOV, LP, F042 …" aria-label="Glossar durchsuchen" data-gsearch>
+          <dl class="kv" data-glossary>${glossaryHtml("")}</dl>
+        </div>
+
+        <div class="card">
+          <h2>Wichtige Regeln &amp; Bestimmungen</h2>
+          <dl class="kv">${D.facts.map(f => `
+            <dt style="display:flex;align-items:center;gap:.4rem;flex-wrap:wrap">
+              <span>${esc(f.t)}</span>
+              ${f.status === 'unbestaetigt' ? '<span class="badge-unbestaetigt" style="font-size:.62rem;padding:1px 5px">⚠️ Unbestätigt</span>' : ''}
+            </dt>
+            <dd>
+              ${esc(f.d)}
+              <div class="card-source-bar" style="margin-top:.3rem;padding-top:.2rem">
+                ${f.verifiedAt ? `<span class="small muted">Stand: ${esc(f.verifiedAt)}</span>` : ''}
+                ${f.src ? `<a class="card-source-link" href="${esc(f.src)}" target="_blank" rel="noopener">Quelle ↗</a>` : ''}
+              </div>
+            </dd>`).join("")}
+          </dl>
+        </div>
+
+        <div class="card">
+          <h2>Offene Fragen &amp; Hinweise</h2>
+          <p class="small muted">Folgende organisatorische Details werden direkt in den ersten Tagen geklärt:</p>
+          <ol class="qa">${D.openQuestions.map(q => `<li>${esc(q)}</li>`).join("")}</ol>
+        </div>
+      </div>
+
+      ${renderSourcesAndStandHtml()}`;
+
     const s = $("[data-gsearch]", el);
-    s.addEventListener("input", () => { $("[data-glossary]", el).innerHTML = glossaryHtml(s.value); });
+    if (s) {
+      s.addEventListener("input", () => { $("[data-glossary]", el).innerHTML = glossaryHtml(s.value); });
+    }
+
+    // Router click handler
+    $$("[data-contact-target]", el).forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const cid = btn.dataset.contactTarget;
+        const targetCard = $(`#contact-${cid}`, el);
+        if (targetCard) {
+          e.preventDefault();
+          targetCard.scrollIntoView({ behavior: "smooth", block: "center" });
+          targetCard.classList.remove("highlight-pulse");
+          void targetCard.offsetWidth; // trigger reflow
+          targetCard.classList.add("highlight-pulse");
+        }
+      });
+    });
+  }
+
+  function renderRouterHtml() {
+    const routingItems = [
+      { q: "Krankmeldung & Attest bei Klausuren", cid: "pruefungsamt" },
+      { q: "Transcript of Records (ToR) erstellen", cid: "pruefungsamt" },
+      { q: "Zweitwiederholungsantrag einer Prüfung (§ 20 PO)", cid: "pruefungsausschuss" },
+      { q: "Anerkennung externer Studienleistungen", cid: "pruefungsausschuss" },
+      { q: "Praktikumsanerkennung (OP & BQT I)", cid: "studienberatung_bsc" },
+      { q: "Studienverlauf & Orientierungsprüfung", cid: "studienberatung_bsc" },
+      { q: "Seminarwahl & -plätze in heiCO", cid: "seminaranmeldung" },
+      { q: "Auslandssemester & ERASMUS+", cid: "erasmus" },
+      { q: "Comenius Peer-Mentoring im 1. Semester", cid: "comenius" },
+      { q: "IT-, WLAN- oder Moodle-Probleme am PI", cid: "it_support" },
+      { q: "BAföG-Leistungsbescheinigung (Formblatt 5)", cid: "bafoeg" },
+      { q: "Prüfungsangst, Schreibblockaden & Krisen", cid: "pbs" },
+      { q: "Individuelles Studiencoaching", cid: "coaching" },
+      { q: "Altklausuren, Ersti-Hütte & Fachschaft", cid: "fachschaft" }
+    ];
+    return `
+      <div class="card" style="margin-bottom:1.5rem">
+        <div class="card-head">
+          <h2>🧭 Wen frage ich bei …? (Schnell-Router)</h2>
+          <span class="badge social">${routingItems.length} Anliegen</span>
+        </div>
+        <p class="muted small">Klicke auf dein Thema, um direkt zur zuständigen Kontaktperson mit Sprechzeiten, Mail und Raum zu springen:</p>
+        <div class="router-grid">
+          ${routingItems.map(item => {
+            const c = D.contacts.find(x => x.id === item.cid) || {};
+            return `
+              <a class="router-chip" href="#contact-${esc(item.cid)}" data-contact-target="${esc(item.cid)}">
+                <div>
+                  <div class="router-chip-topic">${esc(item.q)}</div>
+                  <div class="router-chip-dest">➔ ${esc(c.role || c.name)}</div>
+                </div>
+              </a>`;
+          }).join("")}
+        </div>
+      </div>`;
+  }
+
+  function renderSourcesAndStandHtml() {
+    const list = window.ERSTI_KNOWLEDGE || [];
+    return `
+      <div class="card" style="margin-top:1.5rem">
+        <div class="card-head">
+          <h2>📚 Quellen &amp; Stand der Informationen</h2>
+          <span class="badge social">${list.length} Einträge geprüft</span>
+        </div>
+        <p class="small muted">Transparenz und Verlässlichkeit: Alle Regelungen, Paragrafen und Kontaktdaten basieren auf den amtlichen Ordnungen und aktuellen Institutsseiten der Universität Heidelberg.</p>
+        <div style="overflow-x:auto;margin-top:.75rem">
+          <table class="table" style="width:100%;font-size:.82rem;text-align:left;border-collapse:collapse">
+            <thead>
+              <tr style="border-bottom:2px solid rgba(181,161,138,.3)">
+                <th style="padding:.5rem .6rem">Thema / Regelung</th>
+                <th style="padding:.5rem .6rem">Status</th>
+                <th style="padding:.5rem .6rem">Geprüft am</th>
+                <th style="padding:.5rem .6rem">Offizielle Quelle</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${list.map(k => `
+                <tr style="border-bottom:1px solid rgba(181,161,138,.18)">
+                  <td style="padding:.5rem .6rem"><strong>${esc(k.title)}</strong></td>
+                  <td style="padding:.5rem .6rem">${k.status === 'unbestaetigt' ? '<span class="badge-unbestaetigt">⚠️ Unbestätigt</span>' : '<span class="badge-offiziell">✓ Offiziell</span>'}</td>
+                  <td style="padding:.5rem .6rem" class="muted">${esc(k.verifiedAt || '2026-10-07')}</td>
+                  <td style="padding:.5rem .6rem">${(k.sources || []).map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)} ↗</a>`).join('<br>')}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
   }
   function glossaryHtml(q) {
     q = q.trim().toLowerCase();
@@ -2283,158 +2457,175 @@
   /* ========================================================================
      KI-ASSISTENT (PSYBOT) – 100% KOSTENLOS, OHNE ANMELDUNG & MIT SMART-REROUTE
      ======================================================================== */
-  const AI_KNOWLEDGE_SUMMARY = `
-Du bist "PsyBot", ein hilfsbereiter, präziser KI-Studienassistent für Studierende der Psychologie (B.Sc. 100% polyvalent) an der Universität Heidelberg (WiSe 2026/27).
-Dein Wissen umfasst alle offiziellen Fakten des Psychologischen Instituts der Universität Heidelberg:
-- GESAMTUMFANG: 180 LP Regelstudienzeit (6 Semester, Varianten für 8 oder 10 Semester existieren).
-- PROPÄDEUTIK: 5 LP. Beinhaltet Vorlesung Einführung in die Psychologie (4 LP, Prof. Rummel) und 30 Pflicht-Versuchspersonenstunden (Vpn, 1 LP).
-- VPN-STUNDEN: Genau 30 Stunden Pflicht. Teilnahme über das Heidelberger Studienportal (studienportal.psychologie.uni-heidelberg.de). Vpn-Laufzettel liegen vor Raum F042 aus.
-- METHODEN 1: 12 LP (Voß). Deskriptive Statistik (WiSe, 4 LP + 2 LP Übung) und Inferenzstatistik (SoSe, 4 LP + 2 LP Übung).
-- ORIENTIERUNGSPRÜFUNG (§ 3 Abs. 4 PO): Ist identisch mit der Klausur Inferenzstatistik am Ende des 2. Semesters. Darf bei Nichtbestehen nur 1x wiederholt werden und muss spätestens bis zum Ende des 3. Semesters bestanden sein, sonst erlischt der Prüfungsanspruch!
-- WIEDERHOLUNG VON PRÜFUNGEN: Nicht bestandene Klausuren müssen spätestens im folgenden Semester wiederholt werden. Automatische Anmeldung durch das Prüfungsamt.
-- KRANKMELDUNG / ATTEST: 3-Tage-Frist! Attest + Formular innerhalb von 3 Tagen an pruefungsamt@psychologie.uni-heidelberg.de oder Postfach Nr. 55 im Institut werfen. Statusbestätigung erfolgt in heiCO.
-- PRÜFUNGSAMT: Raum F042, Hauptstr. 47. Sprechzeiten Mo, Di, Do 10:00–11:30, Fr 11:00–12:00. Tel. 06221/54-7342. Mails nur an pruefungsamt@psychologie.uni-heidelberg.de (mit Matrikelnummer!).
-- PRAKTIKA: Orientierungspraktikum 4 Wochen / 150 Std. (5 LP). Berufspraktikum (BQT I) 6 Wochen / 240 Std. (8 LP, ab 3. Semester). Für Approbation/Psychotherapie muss BQT I klinisch nach PsychThApprO sein.
-- EMPRA (Methoden 3): 12 LP über Sem. 3–5. Projektseminare 1 & 2 plus jährlicher Poster-Kongress im Oktober.
-- APPROBATIONSRELEVANTER WEG: B.Sc. polyvalent. Für Psychotherapie Master (Klinische Psychologie) nötig: Interdisz. Kompetenzen Schwerpunkt 2 (Ethik & Recht, Medizinische Aspekte), AOV 1 Option C (Verfahrenslehre), AOV 2 Option C (Klinische Diagnostik & Gesprächsführung), klinisches BQT I.
-- BACHELORARBEIT: 12 LP im 6. Semester. Zählt mit DOPPELTER GEWICHTUNG (Faktor 2) in die Abschlussnote! Zweiergruppen sind gem. § 16 PO erlaubt.
-- ORTE & SERVICE: Testothek im Vordergebäude Raum 019–021 (über 1000 Tests). Kostenloser Buchaufsichtscanner in Raum F015 (Herr Kulczynski). Neue UB-Lernplätze im Institut mit Campus-Card. CIP-Pool mit Remote-Desktop (SPSS, R).
-- IT & SYSTEME (URZ HEIDELBERG):
-  * YoKI: Die universitätseigene datenschutzkonforme KI der Uni Heidelberg auf eigenen Servern (yoki.urz.uni-heidelberg.de). Basiert auf modernen Open-Source LLMs (u. a. Qwen), DSGVO-sicher, kostenlos für Studierende mit Uni-ID im eduroam oder Uni-VPN.
-  * eduVPN & Cisco VPN: Empfohlener VPN-Client des URZ (eduVPN via eduvpn.org oder Cisco Secure Client unter vpn-ac.urz.uni-heidelberg.de) für Volltext-Zugriff auf Fachzeitschriften, YoKI und Institutsserver von zu Hause.
-  * eduroam Campus-WLAN: Immer über das offizielle CAT-Tool einrichten (cat.eduroam.org) mit Benutzername <uni-id>@uni-heidelberg.de.
-  * Microsoft 365: Kostenlose Campus-Lizenzen (Word, Excel, PowerPoint, Teams) über das URZ/asknet für Studierende.
-  * Campus-Card & Drucken: Multifunktionskarte für Mensa, Bibliotheksausweis und Follow-Me Drucken an allen Uni-Druckern (qpilot.urz.uni-heidelberg.de).
-  * HeiChat: Verschlüsselter Matrix-Messenger der Uni für Lerngruppen (heichat.uni-heidelberg.de).
-- KALENDER & STUNDENPLAN: Im Reiter "Kalender" gibt es den interaktiven Monats-, Wochen- und Listenkalender, der sich live an gewählte Übungsgruppen (Allg. Psych. 1) und Tutorien anpasst, inklusive .ics-Kalenderexport für alle Semestertermine.
-Antworte freundlich, präzise und auf Deutsch. Halte Antworten prägnant.
-`;
+  function buildAiRuntimeContext() {
+    const verifiedKnowledge = (window.ERSTI_KNOWLEDGE || []).filter(k => k.status === "offiziell" || k.status === "eks-unterlagen");
+    const knowledgeLines = verifiedKnowledge.map(k => {
+      const srcStr = (k.sources || []).map(s => `${s.title} (${s.url})`).join("; ");
+      return `- [${k.id}] ${k.title}: ${k.summary} (Quelle: ${srcStr})`;
+    }).join("\n");
 
-  const KNOWLEDGE_INTENTS = [
-    {
-      keys: ["vpn", "versuchsperson", "laufzettel", "studienportal", "30 stunden", "stunden eintragen", "proband"],
-      answer: "Im Bachelor Psychologie musst du insgesamt **30 Versuchspersonenstunden** (1 LP) für das Modul Propädeutik ableisten.\n• **Studien finden:** Über das Heidelberger [Studienportal](https://studienportal.psychologie.uni-heidelberg.de/)\n• **Laufzettel:** Vor Raum F042 (Prüfungsamt) mitnehmen und nach jeder Studie unterschreiben lassen.\n• **Hier im Portal:** Nutze unseren interaktiven Vpn-Tracker auf der Startseite, um deine Stunden lokal im Browser mitzuzählen!",
-      actions: [
-        { label: "👉 Zum Vpn-Tracker (Startseite)", route: "start", scrollTo: "#vpnTrackerCard" },
-        { label: "🔬 Guide: Vpn & Empra", route: "guide", guideTab: "vpn-empra" }
-      ]
-    },
-    {
-      keys: ["kalender", "stundenplan", "vorlesung", "vorlesungen", "termin", "termine", "zeitplan", "export", "ics", "uhrzeit", "wann", "wo", "raum", "hs ii", "hs i", "allgemeine psychologie i", "statistik"],
-      answer: "Unter **Kalender & Stundenplan** findest du die komplette Semesterübersicht:\n• Interaktive Monats-, Wochen- und Terminlistenansicht.\n• Passt sich live an deine gewählte Allg.-Psych-Übungsgruppe und dein Tutorium an.\n• Mit dem Button **„Meinen gesamten Kalender exportieren (.ics)“** kannst du alle Termine mit einem Klick in dein Smartphone oder Google/Apple/Outlook Calendar übernehmen.",
-      actions: [
-        { label: "📅 Zum Semesterkalender", route: "stundenplan" }
-      ]
-    },
-    {
-      keys: ["krank", "attest", "ausfall", "prüfungsunfähig", "arbeitsunfähig", "3 tage", "drei tage", "klausur krank"],
-      answer: "Bei krankheitsbedingtem Prüfungsversäumnis gilt zwingend die **3-Tage-Frist**:\n1. Ärztliches Attest (vom selben Prüfungstag) plus das ausgefüllte Formular des Prüfungsamts binnen 3 Tagen einreichen (Postfach 55 oder Mail an `pruefungsamt@psychologie.uni-heidelberg.de` mit Matrikelnummer).\n2. Die Freistellung wird anschließend direkt im **heiCO-System** vermerkt.",
-      actions: [
-        { label: "📋 Guide: Prüfungen & Fristen", route: "guide", guideTab: "pruefungen" },
-        { label: "📍 Prüfungsamt Kontakte", route: "infos" }
-      ]
-    },
-    {
-      keys: ["orientierungsprüfung", "orientierung", "inferenzstatistik", "op", "prüfungsanspruch", "wiederholen", "nicht bestanden"],
-      answer: "Die **Orientierungsprüfung** (§ 3 Abs. 4 PO) ist identisch mit der Klausur **Inferenzstatistik** am Ende des 2. Semesters.\n⚠️ **Wichtig:** Sie darf nur **ein einziges Mal** wiederholt werden und muss spätestens bis zum Ende des **3. Fachsemesters** bestanden sein, sonst erlischt unwiderruflich der Prüfungsanspruch im Studiengang!",
-      actions: [
-        { label: "⚠️ Guide: Orientierungsprüfung", route: "guide", guideTab: "pruefungen" },
-        { label: "📊 Modulhandbuch Methoden 1", route: "studienplan" }
-      ]
-    },
-    {
-      keys: ["approbation", "therapeut", "psychotherapie", "polyvalent", "unterschied", "allgemein", "verfahrenslehre", "psychthappro"],
-      answer: "Unser Heidelberger B.Sc. ist **polyvalent** aufgebaut. Für den späteren Master in Klinischer Psychologie & Psychotherapie wählst du:\n• Interdisziplinäre Kompetenzen: Schwerpunkt 2 (Ethik & Recht, Medizinische Aspekte)\n• AOV 1 Option C (Verfahrenslehre)\n• AOV 2 Option C (Klinische Diagnostik & Gesprächsführung)\n• Klinisches Berufspraktikum (BQT I, 240 Std.).\nDu musst dich erst im 3./4. Semester festlegen – bis dahin ist alles identisch!",
-      actions: [
-        { label: "🎓 Zum 6-Sem. Approbationsplan", route: "studienplan" },
-        { label: "📖 Guide: Master & Approbationsweg", route: "guide", guideTab: "abschluss" }
-      ]
-    },
-    {
-      keys: ["praktik", "bqt", "orientierungspraktikum", "berufspraktikum", "klinik", "glawe", "150", "240", "praktikumsbericht"],
-      answer: "Im Studium gibt es zwei Pflichtpraktika:\n1. **Orientierungspraktikum (5 LP):** 4 Wochen / 150 Stunden. Vor oder in den ersten Semestern machbar.\n2. **Berufspraktikum / BQT I (8 LP):** 6 Wochen / 240 Stunden (ab 3. Semester). Für den Psychotherapie-Weg muss dieses in einer klinischen Einrichtung absolviert werden.",
-      actions: [
-        { label: "💼 Guide: Praktika & BQT I", route: "guide", guideTab: "praktika" }
-      ]
-    },
-    {
-      keys: ["empra", "poster", "kongress", "projektseminar", "untersuchungsbericht", "methoden 3"],
-      answer: "Das **Empra** (Methoden 3, 12 LP) erstreckt sich über 3 Semester (Sem. 3–5). In Kleingruppen plant und realisiert ihr eine eigene empirische Studie. Höhepunkt ist der alljährliche **Poster-Kongress** im Institut mit wissenschaftlicher Präsentation.",
-      actions: [
-        { label: "🔬 Guide: Empra & Kongress", route: "guide", guideTab: "vpn-empra" }
-      ]
-    },
-    {
-      keys: ["bachelorarbeit", "abschlussnote", "faktor 2", "zweiergruppe", "po § 16", "thesis", "abschluss"],
-      answer: "Die **Bachelorarbeit** (12 LP) im 6. Semester zählt mit **doppelter Gewichtung (Faktor 2)** in die Bachelor-Abschlussnote!\nGemäß § 16 PO darf die Arbeit auch als **Zweiergruppe** verfasst werden, wenn die individuellen Beiträge klar abgegrenzt sind.",
-      actions: [
-        { label: "🎓 Guide: Bachelorarbeit & Fristen", route: "guide", guideTab: "abschluss" }
-      ]
-    },
-    {
-      keys: ["yoki", "uni-ki", "urz ki", "server", "ki plattform", "qwen"],
-      answer: "Die Universität Heidelberg bietet unter [yoki.urz.uni-heidelberg.de](https://yoki.urz.uni-heidelberg.de/) eine eigene, **datenschutzkonforme Universitäts-KI (YoKI)** auf universitätseigenen Servern. Keine Datenweitergabe, DSGVO-sicher und kostenlos für Studierende im eduroam oder Uni-VPN nutzbar!",
-      actions: [
-        { label: "📚 Guide: IT & YoKI Details", route: "guide", guideTab: "tools" }
-      ]
-    },
-    {
-      keys: ["eduvpn", "cisco", "vpn-zugang", "netzwerk", "heimarbeit", "vpn"],
-      answer: "Für den sicheren Zugriff von zu Hause auf Fachliteratur, YoKI und Institutsserver empfiehlt das URZ **eduVPN** (moderner Open-Source Client) oder den *Cisco Secure Client* (`vpn-ac.urz.uni-heidelberg.de`).",
-      actions: [
-        { label: "💻 Guide: VPN & Netzwerk-Zugang", route: "guide", guideTab: "tools" }
-      ]
-    },
-    {
-      keys: ["eduroam", "wlan", "wifi", "cat-tool", "cat.eduroam", "internet"],
-      answer: "Richte das Campus-WLAN **eduroam** unbedingt über das offizielle **CAT-Tool** ein ([cat.eduroam.org](https://cat.eduroam.org/)), um das Sicherheitszertifikat zu installieren. Als Benutzername immer `<Uni-ID>@uni-heidelberg.de` eingeben!",
-      actions: [
-        { label: "💻 Guide: WLAN & CAT-Tool", route: "guide", guideTab: "tools" }
-      ]
-    },
-    {
-      keys: ["office", "word", "excel", "powerpoint", "m365", "microsoft", "software", "asknet"],
-      answer: "Über das Campusabkommen des URZ steht allen immatrikulierten Studierenden der Uni Heidelberg **Microsoft 365** (Word, Excel, PowerPoint, Teams) kostenlos für bis zu 5 Endgeräte zur Verfügung.",
-      actions: [
-        { label: "💻 Guide: Software & M365", route: "guide", guideTab: "tools" }
-      ]
-    },
-    {
-      keys: ["scanner", "buchscanner", "buch", "f015", "testothek", "bibliothek", "ub", "raum 019", "testverfahren"],
-      answer: "Im Institut stehen dir besondere Services zur Verfügung:\n• **Buchscanner:** Kostenlos in Raum F015 (Falzkorrektur & PDF direkt auf USB-Stick).\n• **Testothek:** Räume 019–021 (über 1.000 psychologische Testverfahren zur Ausleihe).\n• **Institutsbibliothek:** Neue Lernplätze mit Campus-Card-Einlass.",
-      actions: [
-        { label: "📚 Guide: Scanner, Testothek & Bib", route: "guide", guideTab: "tools" }
-      ]
-    },
-    {
-      keys: ["sprechzeit", "kontakt", "prüfungsamt", "f042", "öffnungszeit", "stefanie glawe", "telefon", "mail", "anschrift"],
-      answer: "Das **Prüfungsamt (Raum F042)** bietet offene Sprechstunden an (Mo, Di, Do 10:00–11:30, Fr 11:00–12:00 Uhr). Telefonisch Di 14–15 & Do 12–13 Uhr (06221 / 54-7342). Fachstudienberaterin ist **Stefanie Glawe**.",
-      actions: [
-        { label: "📍 Zu Kontakten & Sprechzeiten", route: "infos" },
-        { label: "📋 Guide: Prüfungsamt-Details", route: "guide", guideTab: "pruefungen" }
-      ]
-    },
-    {
-      keys: ["eks", "ersti", "kneipentour", "rallye", "begrüßung", "frühstück", "mentor", "mentoren"],
-      answer: "Die **Einführungswoche (EKS)** startet am 5. Oktober mit Begrüßung im Hörsaal II, Institutsführungen, Mentoring-Gruppen, Stadtrallye und Kneipentour. Alle Termine und Gruppeneinteilungen findest du im EKS-Reiter!",
-      actions: [
-        { label: "🎉 Zur EKS-Woche", route: "eks" }
-      ]
-    },
-    {
-      keys: ["studienplan", "180 lp", "leistungspunkte", "modulhandbuch", "8 semester", "10 semester", "regelstudienzeit"],
-      answer: "Der B.Sc. Psychologie umfasst **180 LP**. Wähle in unserem interaktiven Studienplaner zwischen 6 Semestern (Standard oder approbationsrelevant), 8 Semestern oder 10 Semestern, und lies alle Modulbeschreibungen mit direkten Links zum Modulhandbuch.",
-      actions: [
-        { label: "📊 Zum interaktiven Studienplaner", route: "studienplan" }
-      ]
+    const contactLines = (D.contacts || []).map(c => {
+      return `- ${c.role}: ${c.name} | E-Mail: ${c.mail} | Tel: ${c.tel || "–"} | Raum: ${c.room || "–"} | Sprechzeiten: ${c.hours || "–"} | Zuständig: ${(c.zustaendig || []).join(", ")}`;
+    }).join("\n");
+
+    const dateLines = (D.keyDates || []).map(d => {
+      return `- ${d.date}: ${d.title} (${d.sub || ""})`;
+    }).join("\n");
+
+    return `Du bist "PsyBot", der offizielle Erstsemester-Guide-Assistent für das Psychologische Institut der Universität Heidelberg (B.Sc. Psychologie 100% polyvalent, WiSe 2026/27).
+ANTWORTRICHTLINIEN:
+1. Antworte freundlich, präzise und auf Deutsch. Halte Antworten prägnant.
+2. Nutze AUSSCHLIESSLICH die folgenden verifizierten Daten.
+3. Wenn zu einer Frage keine Information in den offiziellen Daten steht, erfinde NIEMALS Räume, Fristen oder Personen, sondern sage klar, dass dazu keine gesicherte Angabe vorliegt, und verweise auf die zuständige Ansprechperson (z. B. Prüfungsamt F042, Fachstudienberatung oder Fachschaft).
+4. Orientierungsprüfung gem. PO 12.07.2021 § 3 Abs. 3: Beinhaltet Deskriptive Statistik (1. Sem.) UND Inferenzstatistik (2. Sem.) im Modul Methoden 1. Beide müssen bis zum Ende des 2. Semesters (bei Wiederholung spätestens bis zum Ende des 3. Fachsemesters) bestanden sein (max. 1 Wiederholung)!
+5. Institutsbibliothek: Dauerhaft geschlossen seit WS 2023/24; stattdessen Lernplätze im Institut (A-Z) und UB Plöck.
+6. CIP-Pool: Aufgelöst.
+7. Drucken: Ricoh myPrint Pull-Printing mit Campus-Card.
+
+OFFIZIELLE INSTITUTS-FAKTEN:
+${knowledgeLines}
+
+OFFIZIELLE ANSPRECHPERSONEN:
+${contactLines}
+
+WICHTIGE SEMESTERTERMINE:
+${dateLines}`;
+  }
+
+  function matchLocalKnowledge(query) {
+    const q = (query || "").toLowerCase();
+    const know = window.ERSTI_KNOWLEDGE || [];
+
+    // 1. Direct intent matches for navigation & specific app features
+    if (/(vpn|versuchsperson|laufzettel|studienportal|30 stunden|proband)/.test(q)) {
+      return {
+        answer: "Im Bachelor Psychologie musst du insgesamt **30 Versuchspersonenstunden (1 LP)** für das Modul Propädeutik ableisten.\n• **Studien finden:** Über das Heidelberger [Studienportal](https://studienportal.psychologie.uni-heidelberg.de/)\n• **Laufzettel:** Vor Raum F042 (Prüfungsamt) mitnehmen und nach jeder Studie unterschreiben lassen.\n• **Hier im Portal:** Nutze unseren interaktiven Vpn-Tracker auf der Startseite, um deine Stunden lokal mitzuzählen!",
+        actions: [
+          { label: "👉 Zum Vpn-Tracker (Startseite)", route: "start", scrollTo: "#vpnTrackerCard" },
+          { label: "🔬 Guide: Vpn & Empra", route: "guide", guideTab: "vpn-empra" }
+        ]
+      };
     }
-  ];
 
-  function matchIntent(query) {
-    const q = query.toLowerCase();
-    for (const item of KNOWLEDGE_INTENTS) {
-      if (item.keys.some(k => q.includes(k))) {
-        return item;
+    if (/(kalender|stundenplan|vorlesung|vorlesungen|termin|termine|zeitplan|export|ics|hs ii|hs i|allgemeine psychologie i)/.test(q) && !q.includes("orientierung")) {
+      return {
+        answer: "Unter **Kalender & Stundenplan** findest du die komplette Semesterübersicht:\n• Interaktive Monats-, Wochen-, Tages- und Terminlistenansicht.\n• Passt sich live an deine gewählte Allg.-Psych-Übungsgruppe und dein Tutorium an.\n• Mit dem Button **„Meinen gesamten Kalender exportieren (.ics)“** kannst du alle Termine mit einem Klick in deinen persönlichen Kalender übernehmen.",
+        actions: [
+          { label: "📅 Zum Semesterkalender", route: "stundenplan" }
+        ]
+      };
+    }
+
+    if (/(eks|ersti-woche|kneipentour|stadtrallye|begrüßung|frühstück)/.test(q) && !q.includes("comenius")) {
+      return {
+        answer: "Die **Einführungswoche (EKS)** startet am 5. Oktober mit der Begrüßung im Hörsaal II (Friedrichsbau), Institutsführungen, Mentoring-Gruppen, Stadtrallye und Kneipentour. Alle Termine und Gruppeneinteilungen findest du im EKS-Reiter!",
+        actions: [
+          { label: "🎉 Zur EKS-Woche", route: "eks" }
+        ]
+      };
+    }
+
+    if (/(studienplan|180 lp|leistungspunkte|modulhandbuch|8 semester|10 semester|regelstudienzeit)/.test(q) && !q.includes("orientierung") && !q.includes("bachelorarbeit")) {
+      return {
+        answer: "Der B.Sc. Psychologie umfasst **180 LP**. Wähle in unserem interaktiven Studienplaner zwischen 6 Semestern (Standard oder approbationsrelevant), 8 Semestern oder 10 Semestern, und lies alle Modulbeschreibungen mit direkten Links zum Modulhandbuch.",
+        actions: [
+          { label: "📊 Zum interaktiven Studienplaner", route: "studienplan" }
+        ]
+      };
+    }
+
+    // 2. Ranked search across window.ERSTI_KNOWLEDGE
+    const words = q.replace(/[^a-z0-9äöüß]/g, " ").split(/\s+/).filter(w => w.length >= 3);
+    let bestItem = null;
+    let bestScore = 0;
+
+    for (const item of know) {
+      let score = 0;
+      const idMatches = words.some(w => item.id.includes(w));
+      if (idMatches) score += 8;
+
+      const tags = item.tags || [];
+      for (const t of tags) {
+        if (q.includes(t.toLowerCase())) score += 12;
+        for (const w of words) {
+          if (t.toLowerCase().includes(w)) score += 4;
+        }
+      }
+
+      const title = (item.title || "").toLowerCase();
+      for (const w of words) {
+        if (title.includes(w)) score += 3;
+      }
+
+      const summary = (item.summary || "").toLowerCase();
+      for (const w of words) {
+        if (summary.includes(w)) score += 1;
+      }
+
+      if (score > bestScore) {
+        bestScore = score;
+        bestItem = item;
+      }
+    }
+
+    if (bestItem && bestScore >= 6) {
+      let text = `**${bestItem.title}**\n\n${bestItem.summary}`;
+      if (bestItem.status === "unbestaetigt") {
+        text += "\n\n⚠️ *Hinweis: Dieser Punkt ist institutsseitig noch unbestätigt.*";
+      }
+      if (bestItem.sources && bestItem.sources.length) {
+        const s = bestItem.sources[0];
+        text += `\n\n📌 **Quelle:** [${s.title}](${s.url}) (Stand: ${bestItem.verifiedAt || "2026-10-07"})`;
+      }
+
+      let actions = [];
+      if (bestItem.category === "pruefungen" || bestItem.id.includes("pruefung") || bestItem.id.includes("attest")) {
+        actions = [
+          { label: "📋 Guide: Prüfungen & Fristen", route: "guide", guideTab: "pruefungen" },
+          { label: "📍 Prüfungsamt Kontakte", route: "infos" }
+        ];
+      } else if (bestItem.id.includes("praktik")) {
+        actions = [
+          { label: "💼 Guide: Praktika & BQT I", route: "guide", guideTab: "praktika" }
+        ];
+      } else if (bestItem.id.includes("bachelor") || bestItem.id.includes("master")) {
+        actions = [
+          { label: "🎓 Guide: Abschluss & Master", route: "guide", guideTab: "abschluss" },
+          { label: "📊 Zum Studienplan", route: "studienplan" }
+        ];
+      } else if (bestItem.category === "it" || bestItem.id.includes("bibliothek") || bestItem.id.includes("scanner") || bestItem.id.includes("cip")) {
+        actions = [
+          { label: "💻 Guide: Tools & IT", route: "guide", guideTab: "tools" }
+        ];
+      } else if (bestItem.id.includes("empra")) {
+        actions = [
+          { label: "🔬 Guide: Vpn & Empra", route: "guide", guideTab: "vpn-empra" },
+          { label: "📅 Zum Semesterkalender", route: "stundenplan" }
+        ];
+      } else {
+        actions = [
+          { label: "📍 Zu Infos, Regeln & Kontakten", route: "infos" }
+        ];
+      }
+
+      return { answer: text, actions };
+    }
+
+    return null;
+  }
+
+  function findContactFallback(query) {
+    const q = (query || "").toLowerCase();
+    const contacts = D.contacts || [];
+    for (const c of contacts) {
+      if (q.includes(c.id.toLowerCase())) return c;
+      const roleWords = c.role.toLowerCase().replace(/[^a-z0-9äöüß]/g, " ").split(/\s+/).filter(w => w.length >= 3);
+      if (roleWords.some(w => q.includes(w))) return c;
+      const nameWords = c.name.toLowerCase().replace(/[^a-z0-9äöüß]/g, " ").split(/\s+/).filter(w => w.length >= 3);
+      if (nameWords.some(w => q.includes(w))) return c;
+      for (const z of (c.zustaendig || [])) {
+        const zWords = z.toLowerCase().replace(/[^a-z0-9äöüß]/g, " ").split(/\s+/).filter(w => w.length >= 4);
+        if (zWords.some(w => q.includes(w))) return c;
       }
     }
     return null;
@@ -2459,16 +2650,33 @@ Antworte freundlich, präzise und auf Deutsch. Halte Antworten prägnant.
   }
 
   async function getAiResponse(userText) {
-    // 1. Direct local intent match (instant 0ms response, 100% reliable)
-    const direct = matchIntent(userText);
+    // 1. Direct local verified knowledge match (instant 0ms response, 100% offline & reliable)
+    const direct = matchLocalKnowledge(userText);
     if (direct) {
+      return direct;
+    }
+
+    // 2. If user hasn't opted in to external AI, answer safely from verified contacts
+    if (!state.aiOptIn) {
+      const contact = findContactFallback(userText);
+      if (contact) {
+        return {
+          answer: `Dazu liegt im lokalen Erstsemester-Wissensstand kein eigener Artikel vor.\n\nLaut Institut ist für dieses Thema zuständig:\n**${contact.role}: ${contact.name}**\n• E-Mail: [${contact.mail}](mailto:${contact.mail})\n• Raum: ${contact.room || "–"}\n• Sprechzeiten: ${contact.hours || "–"}\n• Zuständig u. a. für: ${(contact.zustaendig || []).join(", ")}\n\n💡 *Tipp:* Aktiviere oben „Externe KI-Unterstützung zulassen“, um eine Freitextsuche über ein externes Sprachmodell zu nutzen.`,
+          actions: [
+            { label: "📍 Alle Kontakte & Sprechzeiten", route: "infos" }
+          ]
+        };
+      }
       return {
-        answer: direct.answer,
-        actions: direct.actions
+        answer: "Dazu liegt im lokalen Erstsemester-Wissensstand keine gesicherte Angabe vor. Um Falschauskünfte oder Spekulationen zu vermeiden, wende dich bitte an die offizielle Ansprechstelle:\n• **Prüfungsamt** (F042 / `pruefungsamt@psychologie.uni-heidelberg.de`)\n• **Fachstudienberatung** (Stefanie Glawe / `fachstudienberatung@psychologie.uni-heidelberg.de`)\n• **Fachschaft Psychologie** (`fspsy@uni-heidelberg.de`)\n\n💡 *Tipp:* Aktiviere oben „Externe KI-Unterstützung zulassen“, wenn du allgemeine Freitext-Fragen über ein externes KI-Modell (text.pollinations.ai) stellen möchtest.",
+        actions: [
+          { label: "📍 Zu Kontakten & Sprechzeiten", route: "infos" },
+          { label: "📋 Zum Studien-Guide", route: "guide", guideTab: "pruefungen" }
+        ]
       };
     }
 
-    // 2. Query free open AI endpoint (Pollinations AI – 100% free, no login, no API key)
+    // 3. User opted in to external AI (Pollinations AI – only prompt & user query, NEVER user state)
     try {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), 7000);
@@ -2478,7 +2686,7 @@ Antworte freundlich, präzise und auf Deutsch. Halte Antworten prägnant.
         signal: controller.signal,
         body: JSON.stringify({
           messages: [
-            { role: "system", content: AI_KNOWLEDGE_SUMMARY },
+            { role: "system", content: buildAiRuntimeContext() },
             { role: "user", content: userText }
           ],
           model: "openai",
@@ -2489,11 +2697,10 @@ Antworte freundlich, präzise und auf Deutsch. Halte Antworten prägnant.
       if (res.ok) {
         const text = await res.text();
         if (text && text.trim()) {
-          // Determine best contextual actions from query or response
-          const matched = matchIntent(text) || matchIntent(userText);
+          const matched = matchLocalKnowledge(text) || matchLocalKnowledge(userText);
           const actions = matched ? matched.actions : [
             { label: "📋 Zum Studien-Guide", route: "guide", guideTab: "pruefungen" },
-            { label: "📅 Zum Semesterkalender", route: "stundenplan" }
+            { label: "📍 Zu Kontakten & Sprechzeiten", route: "infos" }
           ];
           return { answer: text.trim(), actions };
         }
@@ -2502,7 +2709,7 @@ Antworte freundlich, präzise und auf Deutsch. Halte Antworten prägnant.
       console.info("Pollinations online query bypassed, using intelligent local engine:", e);
     }
 
-    // 3. Fallback
+    // 4. Fallback if network fails
     return {
       answer: "Hier ist dein Heidelberger Studien-Assistent: Im B.Sc. Psychologie (180 LP) hast du im 1. Semester Propädeutik (inkl. 30 Vpn-Stunden), Deskriptive Statistik, Allgemeine Psychologie I, Entwicklungspsychologie 1 und Pädagogische Psychologie 1. Wähle unten einen Bereich, um direkt dorthin zu navigieren:",
       actions: [
@@ -2521,8 +2728,19 @@ Antworte freundlich, präzise und auf Deutsch. Halte Antworten prägnant.
     const form = $("#aiForm");
     const input = $("#aiInput");
     const messages = $("#aiMessages");
+    const optInEl = $("#aiOptIn");
+
+    if (optInEl) {
+      optInEl.checked = !!state.aiOptIn;
+      optInEl.addEventListener("change", () => {
+        state.aiOptIn = !!optInEl.checked;
+        save();
+        toast(state.aiOptIn ? "Externe KI aktiviert (text.pollinations.ai)" : "100% lokales Wissen aktiv (offline)");
+      });
+    }
 
     function openAi() {
+      if (optInEl) optInEl.checked = !!state.aiOptIn;
       if (typeof modal.showModal === "function") modal.showModal();
       else modal.setAttribute("open", "");
       input.focus();
