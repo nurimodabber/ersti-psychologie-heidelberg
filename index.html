@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ersti-Guide Psychologie Heidelberg</title>
+  <meta name="description" content="Ersti-Woche (EKS), Stundenplan 1. Semester und Studienplaner für den B.Sc. Psychologie an der Uni Heidelberg, WiSe 2026/27.">
+  <meta name="theme-color" content="#E3D3BF">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a class="skip" href="#main">Zum Inhalt springen</a>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#start" aria-label="Startseite">
+        <img src="assets/icon.svg" alt="" width="32" height="32">
+        <span>
+          <strong>Psychologie Heidelberg</strong>
+          <small>B.Sc. Studienbegleiter · WiSe 2026/27</small>
+        </span>
+      </a>
+      <nav class="tabs" aria-label="Hauptnavigation">
+        <a href="#start" data-route="start">Start</a>
+        <a href="#stundenplan" data-route="stundenplan">Kalender</a>
+        <a href="#studienplan" data-route="studienplan">Studienplan</a>
+        <a href="#guide" data-route="guide">Studien-Guide</a>
+        <a href="#eks" data-route="eks">EKS-Woche</a>
+        <a href="#infos" data-route="infos">Infos</a>
+      </nav>
+      <div class="topbar-actions">
+        <button class="ai-topbar-pill" id="aiBtn" aria-label="PsyBot KI-Studienassistent öffnen" title="Frag PsyBot alles zum Studium (Kostenlos &amp; ohne Anmeldung)">
+          <span class="ai-pill-icon">✨</span>
+          <span class="ai-pill-label">PsyBot <span class="ai-pill-badge">KI</span></span>
+        </button>
+        <button class="icon-btn" id="themeToggle" aria-label="Erscheinungsbild wechseln" title="Dark Mode umschalten">
+          <svg id="themeIconSun" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0-5a1 1 0 0 0 1-1V1a1 1 0 0 0-2 0v1a1 1 0 0 0 1 1zm0 19a1 1 0 0 0-1 1v1a1 1 0 0 0 2 0v-1a1 1 0 0 0-1-1zm10-8h-1a1 1 0 0 0 0 2h1a1 1 0 0 0 0-2zM4 12a1 1 0 0 0-1-1H2a1 1 0 0 0 0 2h1a1 1 0 0 0 1-1zm14.07 6.07a1 1 0 0 0-1.41 1.41l.71.71a1 1 0 1 0 1.41-1.41l-.71-.71zM6.64 6.64a1 1 0 0 0-1.41-1.41l-.71.71A1 1 0 0 0 5.93 7.35l.71-.71zm11.43-1.41a1 1 0 0 0-1.41 0 1 1 0 0 0 0 1.41l.71.71a1 1 0 1 0 1.41-1.41l-.71-.71zM6.64 17.36l-.71.71a1 1 0 1 0 1.41 1.41l.71-.71a1 1 0 0 0-1.41-1.41z"/></svg>
+          <svg id="themeIconMoon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="display:none"><path fill="currentColor" d="M12.3 2a10 10 0 0 0-.19 20 10.04 10.04 0 0 0 9.89-7.5 1 1 0 0 0-1.2-1.21 8 8 0 1 1-7.29-11.19 1 1 0 0 0-.21-1.98z"/></svg>
+        </button>
+        <button class="icon-btn" id="settingsBtn" aria-label="Meine Gruppen einstellen" title="Meine Gruppen">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7Zm7.43-2.53c.04-.32.07-.64.07-.97s-.03-.66-.07-1l2.11-1.63a.5.5 0 0 0 .12-.64l-2-3.46a.5.5 0 0 0-.61-.22l-2.49 1a7.3 7.3 0 0 0-1.69-.98l-.38-2.65A.49.49 0 0 0 14 2h-4a.49.49 0 0 0-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1a.5.5 0 0 0-.61.22l-2 3.46a.49.49 0 0 0 .12.64L4.57 11c-.04.34-.07.67-.07 1s.03.65.07.97l-2.11 1.66a.49.49 0 0 0-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.58 1.69-.98l2.49 1.01c.22.08.49 0 .61-.22l2-3.46a.5.5 0 0 0-.12-.64l-2.11-1.66Z"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section id="view-start" class="view" data-view="start" aria-label="Start"></section>
+    <section id="view-stundenplan" class="view" data-view="stundenplan" aria-label="Kalender &amp; Stundenplan" hidden></section>
+    <section id="view-studienplan" class="view" data-view="studienplan" aria-label="Studienplan" hidden></section>
+    <section id="view-guide" class="view" data-view="guide" aria-label="Studien-Guide" hidden></section>
+    <section id="view-eks" class="view" data-view="eks" aria-label="EKS-Woche" hidden></section>
+    <section id="view-infos" class="view" data-view="infos" aria-label="Infos" hidden></section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <p><strong>Inoffizieller Studienbegleiter Psychologie (B.Sc.)</strong> · Universität Heidelberg · WiSe 2026/27</p>
+      <p class="small muted">Keine offizielle Webseite der Universität Heidelberg. Alle Angaben ohne Gewähr – maßgeblich sind die offiziellen Informationen, Modulhandbücher und Prüfungsordnungen des Instituts.</p>
+      <p class="small muted">🔒 <strong>100% datenschutzfreundlich:</strong> Speicherung deiner Einstellungen, Vpn-Stunden, Häkchen &amp; To-dos erfolgt ausschließlich lokal in deinem Browser (localStorage). Keine Server-Datenbank, kein Tracking.</p>
+    </div>
+  </footer>
+
+  <nav class="bottom-nav" aria-label="Navigation (mobil)">
+    <a href="#start" data-route="start"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 3l9 8v10h-6v-6H9v6H3z"/></svg><span>Start</span></a>
+    <a href="#stundenplan" data-route="stundenplan"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg><span>Kalender</span></a>
+    <a href="#studienplan" data-route="studienplan"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h8v8H3V3Zm10 0h8v8h-8V3ZM3 13h8v8H3v-8Zm10 0h8v8h-8v-8Z"/></svg><span>Studium</span></a>
+    <a href="#guide" data-route="guide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg><span>Guide</span></a>
+    <a href="#infos" data-route="infos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 15h-2v-6h2v6Zm0-8h-2V7h2v2Z"/></svg><span>Infos</span></a>
+  </nav>
+
+  <dialog id="settings" aria-labelledby="settingsTitle">
+    <form method="dialog" class="settings-form">
+      <h2 id="settingsTitle">Meine Gruppen</h2>
+      <p class="muted">Damit Zeitplan und Stundenplan nur das zeigen, was für dich gilt. Wird nur in diesem Browser gespeichert.</p>
+      <label>EKS-Gruppe (Hausführung &amp; Mittagessen am Mo 5.10.)
+        <select name="eksGroup">
+          <option value="">Weiß ich noch nicht</option>
+          <option value="1">Gruppe 1</option><option value="2">Gruppe 2</option><option value="3">Gruppe 3</option>
+          <option value="4">Gruppe 4</option><option value="5">Gruppe 5</option><option value="6">Gruppe 6</option>
+        </select>
+      </label>
+      <label>Gruppe für die Bibliotheksführung (Fr 9.10.)
+        <select name="ubGroup">
+          <option value="">Weiß ich noch nicht</option>
+          <option value="1">Gruppe 1 · 09:30</option><option value="2">Gruppe 2 · 10:00</option><option value="3">Gruppe 3 · 10:30</option>
+        </select>
+      </label>
+      <label>Übungsgruppe Allgemeine Psychologie 1
+        <select name="ueGroup">
+          <option value="">Noch nicht gewählt</option>
+          <option value="1">Gruppe 1 · Mi 14:15</option><option value="2">Gruppe 2 · Mi 16:15</option><option value="3">Gruppe 3 · Do 16:15</option>
+        </select>
+      </label>
+      <label>Statistik-Tutorium (freiwillig)
+        <select name="tutGroup">
+          <option value="">Keins / noch offen</option>
+          <option value="1">Gruppe 1 · Di 11:15</option><option value="2">Gruppe 2 · Mi 09:15</option><option value="3">Gruppe 3 · Do 09:15</option>
+        </select>
+      </label>
+      <label>Erscheinungsbild
+        <select name="theme">
+          <option value="auto">Automatisch (Systemeinstellung)</option>
+          <option value="light">Sandstone (Hell)</option>
+          <option value="dark">Slate / Dunkel</option>
+        </select>
+      </label>
+      <div class="dialog-actions">
+        <button type="button" class="btn ghost" id="resetAll">Alles zurücksetzen</button>
+        <button value="ok" class="btn primary">Speichern</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="eventModal" class="event-modal" aria-labelledby="eventModalTitle">
+    <div class="event-modal-window">
+      <div class="event-modal-header">
+        <div class="event-modal-title-wrap">
+          <span class="badge" id="eventModalCat">Termin</span>
+          <h2 id="eventModalTitle">Termindetails</h2>
+        </div>
+        <button type="button" class="del" id="eventModalClose" aria-label="Schließen">×</button>
+      </div>
+      <div class="event-modal-body" id="eventModalBody"></div>
+      <div class="event-modal-actions">
+        <button type="button" class="btn primary" id="eventModalIcs">Termin in Kalender (.ics)</button>
+        <button type="button" class="btn" id="eventModalDismiss">Schließen</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="aiModal" class="ai-modal" aria-labelledby="aiTitle">
+    <div class="ai-window">
+      <div class="ai-header">
+        <div class="ai-header-title">
+          <span class="ai-avatar">✨</span>
+          <div>
+            <div style="display:flex;align-items:center;gap:.5rem">
+              <h2 id="aiTitle" style="margin:0">PsyBot · KI-Studienassistent</h2>
+              <span class="ai-status-pill">🟢 Ohne Anmeldung</span>
+            </div>
+            <small class="muted">Kennt Modulhandbuch, Prüfungsordnung, Termine &amp; URZ-IT</small>
+          </div>
+        </div>
+        <button type="button" class="del" id="aiClose" aria-label="Schließen">×</button>
+      </div>
+
+      <div class="ai-messages" id="aiMessages" role="log" aria-live="polite">
+        <div class="ai-bubble bot">
+          Hallo! Ich bin <strong>PsyBot</strong>, dein Assistent für das Psychologiestudium an der Uni Heidelberg. 🧠<br><br>
+          Ich kenne alle Termine, Fristen, Vpn-Regeln, IT-Dienste und Studienpläne – <strong>100% kostenlos und ohne Anmeldung</strong>.<br><br>
+          Frage mich etwas oder wähle einen Schnelleinstieg:
+          <div class="ai-suggestions">
+            <button data-ai-prompt="Wo trage ich meine Vpn-Stunden ein?">🔬 30 Vpn-Stunden eintragen</button>
+            <button data-ai-prompt="Wann und wo sind meine Vorlesungen?">📅 Stundenplan &amp; Vorlesungen</button>
+            <button data-ai-prompt="Wie melde ich mich für eine Klausur krank?">📋 Krankmeldung (3-Tage-Frist)</button>
+            <button data-ai-prompt="Was muss ich bei der Orientierungsprüfung beachten?">⚠️ Orientierungsprüfung</button>
+            <button data-ai-prompt="Wie richte ich Uni-WLAN eduroam und VPN ein?">💻 WLAN &amp; VPN einrichten</button>
+            <button data-ai-prompt="Was ist der Unterschied zwischen approbationsrelevant und allgemein?">🎓 Approbationsweg</button>
+          </div>
+        </div>
+      </div>
+
+      <form class="ai-input-form" id="aiForm">
+        <input type="text" id="aiInput" placeholder="Frage z. B. 'Wo trage ich Vpn ein?' oder 'Krankmeldung?' …" aria-label="Frage an PsyBot" autocomplete="off" required>
+        <button type="submit" class="btn primary" id="aiSend" aria-label="Senden">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+      </form>
+    </div>
+  </dialog>
+
+  <button class="ai-float-btn" id="aiFloatBtn" aria-label="Frag PsyBot zum Studium" title="Frag PsyBot alles zum Studium (Kostenlos &amp; ohne Anmeldung)">
+    <span class="ai-float-icon">✨</span>
+    <span class="ai-float-text">
+      <strong>Frag PsyBot</strong>
+      <small>Uni-Assistent · Ohne Login</small>
+    </span>
+  </button>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/data-extra.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
