@@ -278,7 +278,7 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 1.75rem 16px 2.5rem; out
 .hero p { color: var(--muted); margin: 0; max-width: 56ch; }
 .hero h1 { max-width: none; display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem 1rem; }
 .hero .wk-n { font-size: clamp(2.6rem, 8vw, 4.5rem); font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
-.hero .wk-sub { font-size: 1rem; font-weight: 500; color: var(--muted); }
+.hero .wk-sub { letter-spacing: 0; font-size: 1rem; font-weight: 500; color: var(--muted); }
 .next3 { list-style: none; padding: 0; margin: 1.5rem 0 0; display: grid; gap: .6rem; }
 .next3 li { display: grid; grid-template-columns: 9.5rem 1fr; gap: 1rem; padding: .6rem 1rem; background: var(--limestone); border-radius: 18px; box-shadow: var(--sh-in); }
 .next3 .when { font-weight: 700; font-variant-numeric: tabular-nums; }
