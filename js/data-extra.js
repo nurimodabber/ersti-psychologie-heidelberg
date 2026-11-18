@@ -286,7 +286,7 @@
     {
       id: "pruefungen",
       title: "Prüfungen & Fristen",
-      icon: "📋",
+      icon: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 12h6"/><path d="M9 16h4"/></svg>`,
       desc: "Orientierungsprüfung, Atteste, Wiederholungsfristen und Anwesenheit.",
       items: [
         { knowledgeId: "orientierungspruefung" },
@@ -300,7 +300,7 @@
     {
       id: "studium",
       title: "Studienaufbau & Regeln",
-      icon: "📊",
+      icon: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>`,
       desc: "Freie Spitze, Regelstudienzeit, Teilzeit und Arbeiten während des Studiums.",
       items: [
         { knowledgeId: "freie_spitze" },
@@ -313,7 +313,7 @@
     {
       id: "vpn-empra",
       title: "Vpn-Stunden & Empra",
-      icon: "🔬",
+      icon: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2v7.5L5.5 17a2 2 0 0 0 1.7 3h9.6a2 2 0 0 0 1.7-3L14 9.5V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></svg>`,
       desc: "30 Versuchspersonenstunden sammeln, Studienportal nutzen und das Empirische Praktikum meistern.",
       items: [
         {
@@ -341,7 +341,7 @@
     {
       id: "praktika",
       title: "Praktika & BQT I",
-      icon: "💼",
+      icon: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`,
       desc: "Orientierungspraktikum, berufsqualifizierende Tätigkeit (BQT I) und Approbationskriterien.",
       items: [
         { knowledgeId: "praktika_ueberblick" }
@@ -350,7 +350,7 @@
     {
       id: "tools",
       title: "Lernorte, Testothek & IT",
-      icon: "📚",
+      icon: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
       desc: "Arbeitsplätze, Testothek, Buchscanner, YoKI und Netzwerkzugang.",
       items: [
         { knowledgeId: "lernplaetze_bibliothek" },
@@ -364,7 +364,7 @@
     {
       id: "leben",
       title: "Campus, Community & Erste Hilfe",
-      icon: "🏛️",
+      icon: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 10h18M5 10v11M19 10v11M9 10v11M15 10v11M12 3 2 10h20L12 3z"/></svg>`,
       desc: "Comenius-Mentoring, Fachschaft, Erste Hilfe und Institutszeiten.",
       items: [
         { knowledgeId: "comenius_mentoring" },
@@ -377,7 +377,7 @@
     {
       id: "abschluss",
       title: "Bachelorarbeit & Master",
-      icon: "🎓",
+      icon: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>`,
       desc: "Voraussetzungen, doppelte Notengewichtung (Faktor 2), Zweier-Teams und Master KliPP / PFA.",
       items: [
         { knowledgeId: "bachelorarbeit" },
