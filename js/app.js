@@ -1582,6 +1582,11 @@
               </div>
             </div>
 
+            <!-- Kalender-Abo (Dialog #calSyncModal) -->
+            <button type="button" class="cal-icon-btn" data-cal-sync aria-label="Kalender abonnieren" title="Kalender abonnieren (bleibt synchron)">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
+            </button>
+
             <!-- Kalenderexport -->
             <button class="cal-icon-btn" data-ics="full" aria-label="Kalender exportieren" title="Meinen Kalender exportieren (.ics)">
               <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
@@ -1755,6 +1760,9 @@
         if (!pop.contains(evt.target)) pop.remove();
       }, { once: true });
     }));
+
+    const syncBtn = $("[data-cal-sync]", el);
+    if (syncBtn) syncBtn.addEventListener("click", openCalSync);
 
     // ICS Export
     const icsBtn = $("[data-ics=full]", el);
@@ -2721,6 +2729,60 @@ ${dateLines}`;
     };
   }
 
+  // Kalender-Abo: baut die Feed-URL für api/calendar.js aus den Dialog-Feldern
+  function calSyncUrl() {
+    const eks = $("#syncIncludeEks").checked;
+    const cats = ["vl", "ue"];
+    if (eks) cats.push("eks");
+    if ($("#syncIncludeExams").checked) cats.push("exam");
+    const q = new URLSearchParams({
+      ue: $("#syncUeGroup").value,
+      tut: $("#syncTutGroup").value,
+      eks: eks ? "1" : "0",
+      cats: cats.join(",")
+    });
+    return `${location.origin}/calendar.ics?${q}`;
+  }
+
+  function updateCalSync() {
+    const url = calSyncUrl();
+    const webcal = url.replace(/^https?:/, "webcal:");
+    $("#syncUrlInput").value = url;
+    $("#syncWebcalBtn").href = webcal;
+    $("#syncGoogleBtn").href = "https://calendar.google.com/calendar/r?cid=" + encodeURIComponent(webcal);
+  }
+
+  function openCalSync() {
+    const modal = $("#calSyncModal");
+    updateCalSync();
+    if (typeof modal.showModal === "function") modal.showModal();
+    else modal.setAttribute("open", "");
+  }
+
+  function initCalSync() {
+    const modal = $("#calSyncModal");
+    if (!modal) return;
+    const close = () => {
+      if (typeof modal.close === "function") modal.close();
+      else modal.removeAttribute("open");
+    };
+    $("#calSyncClose").addEventListener("click", close);
+    modal.addEventListener("click", ev => { if (ev.target === modal) close(); });
+    ["#syncUeGroup", "#syncTutGroup", "#syncIncludeEks", "#syncIncludeExams"]
+      .forEach(sel => $(sel).addEventListener("change", updateCalSync));
+    $("#syncCopyBtn").addEventListener("click", async () => {
+      const input = $("#syncUrlInput");
+      try {
+        await navigator.clipboard.writeText(input.value);
+        toast("Link kopiert");
+      } catch {
+        input.select();
+        toast("Link markiert – bitte mit Strg/⌘+C kopieren");
+      }
+    });
+    $("#syncDownloadIcsBtn").addEventListener("click", () => { location.href = calSyncUrl(); });
+  }
+
   function initAiAssistant() {
     const modal = $("#aiModal");
     const openBtns = [$("#aiBtn"), $("#aiFloatBtn")].filter(Boolean);
@@ -2853,6 +2915,7 @@ ${dateLines}`;
   /* ---------------- Start ---------------- */
   applyTheme();
   initSettings();
+  initCalSync();
   initAiAssistant();
   window.addEventListener("hashchange", () => { route(); window.scrollTo(0, 0); });
   route();
