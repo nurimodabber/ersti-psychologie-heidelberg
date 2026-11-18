@@ -239,32 +239,22 @@
     const toLect = daysBetween(n, dt(D.meta.lecturesStart));
     const toEnd = daysBetween(n, dt(D.meta.semesterEnd));
 
-    let pills = "";
-    if (toEks > 0) pills += pill(toEks, toEks === 1 ? "Tag bis zur EKS-Woche" : "Tage bis zur EKS-Woche");
-    else if (today <= "2026-10-12") {
-      const idx = D.eksDays.findIndex(d => d.date === today);
-      pills += pill(idx >= 0 ? `Tag ${idx + 1}` : "EKS", idx >= 0 ? D.eksDays[idx].title.replace(/^Tag \d – /, "") : "läuft gerade");
-    }
-    if (toLect > 0) pills += pill(toLect, toLect === 1 ? "Tag bis Vorlesungsbeginn" : "Tage bis Vorlesungsbeginn");
-    else if (toEnd >= 0) {
-      const wk = Math.floor(daysBetween(dt(D.meta.semesterStart), n) / 7) + 1;
-      pills += pill(inBreak(today) ? "Pause" : `Woche ${wk}`, inBreak(today) ? "vorlesungsfrei" : "der Vorlesungszeit");
-      pills += pill(toEnd, "Tage bis Semesterende");
-    }
+    const wk = Math.floor(daysBetween(dt(D.meta.semesterStart), n) / 7) + 1;
+    const wkTotal = Math.ceil((daysBetween(dt(D.meta.semesterStart), dt(D.meta.semesterEnd)) + 1) / 7);
+    let big, sub;
+    if (toLect > 0) { big = `${toLect} ${toLect === 1 ? "Tag" : "Tage"}`; sub = "bis Vorlesungsbeginn"; }
+    else if (toEnd < 0) { big = "Semesterende"; sub = "Schönen Semesterabschluss"; }
+    else if (inBreak(today)) { big = "Pause"; sub = "vorlesungsfrei"; }
+    else { big = `Woche ${wk}`; sub = `von ${wkTotal} der Vorlesungszeit`; }
     const p = planStats();
-    const vpnTotal = state.vpnHours || 0;
-    pills += pill(`${p.done}/${p.total}`, "LP abgehakt");
-    pills += pill(`${vpnTotal}/30`, "Vpn-Std. (1 LP)");
 
     el.innerHTML = `
       <div class="hero">
-        <h1>Psychologie Heidelberg</h1>
-        <p>${esc(D.meta.subtitle)}. Dein digitaler Begleiter für Vorlesungen, Modulplanung, Vpn-Stunden und alle Regelungen am Institut.</p>
-        <div class="countdown">${pills}</div>
+        <h1><span class="wk-n">${esc(big)}</span> <span class="wk-sub">${esc(sub)}</span></h1>
+        ${nextThree(n)}
       </div>
       <div class="grid grid-2">
         <div class="stack">
-          ${nowNextCard(n)}
           ${vpnTrackerCard()}
           <div class="card">
             <div class="card-head"><h2>Semestertermine</h2><a class="btn" href="#stundenplan">Zum Kalender</a></div>
@@ -289,35 +279,27 @@
     bindVpn(el);
     $$("[data-open-settings]", el).forEach(b => b.addEventListener("click", openSettings));
   }
-  function pill(big, small) { return `<div class="pill-lg"><b>${esc(big)}</b><span>${esc(small)}</span></div>`; }
-
-  function nowNextCard(n) {
-    const ev = allEvents();
-    const cur = ev.find(e => e.start <= n && n < e.end && !e.allDay);
-    const nxt = ev.find(e => e.start > n);
-    const line = (e) => {
-      const time = e.allDay ? fmtRange(e.date, null) : `${fmtShort(e.date)} · ${String(e.start.getHours()).padStart(2, "0")}:${String(e.start.getMinutes()).padStart(2, "0")} Uhr`;
-      return `<div class="now-title">${esc(e.title)}</div><div class="now-meta">${esc(time)} ${e.loc ? "· " + placeBadge(e.loc) : ""}</div>`;
-    };
-    let html = `<div class="card now-card">`;
-    if (cur) html += `<div class="now-label">Jetzt</div>${line(cur)}<hr style="margin:1rem 0">`;
-    if (nxt) {
-      const mins = Math.round((nxt.start - n) / 60000);
-      const rel = mins < 60 ? `in ${mins} Min.` : mins < 1440 ? `in ${Math.round(mins / 60)} Std.` : `in ${Math.round(mins / 1440)} Tagen`;
-      html += `<div class="now-label">Als Nächstes · ${rel}</div>${line(nxt)}`;
-    } else html += `<div class="now-label">Als Nächstes</div><p class="muted">Keine weiteren Termine im Wintersemester.</p>`;
-    if (!state.ueGroup) html += `<p class="small muted" style="margin:.7rem 0 0">Tipp: <button class="btn ghost" data-open-settings style="padding:.2rem .6rem">Gruppen einstellen</button> – dann erscheinen auch deine Übungstermine.</p>`;
-    return html + `</div>`;
+  function nextThree(n) {
+    const ev = allEvents().filter(e => e.end > n).slice(0, 3);
+    const hm = d => `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")} Uhr`;
+    const tip = state.ueGroup ? "" : `<p class="small muted">Tipp: <button class="btn ghost" data-open-settings>Gruppen einstellen</button>, dann erscheinen auch deine Übungstermine.</p>`;
+    if (!ev.length) return `<p class="muted">Keine weiteren Termine im Wintersemester.</p>${tip}`;
+    return `<ul class="next3">${ev.map(e => `<li><div class="when">${e.start <= n && !e.allDay ? "Jetzt" : esc(e.allDay ? fmtRange(e.date, null) : `${fmtShort(e.date)}, ${hm(e.start)}`)}</div>
+      <div><b>${esc(e.title)}</b>${e.loc ? " " + placeBadge(e.loc) : ""}</div></li>`).join("")}</ul>${tip}`;
   }
 
   function keyDatesList(today) {
     const nextIdx = D.keyDates.findIndex(k => (k.dateEnd || k.date) >= today);
-    return `<ul class="dates">${D.keyDates.map((k, i) => {
+    const row = (k, i) => {
       const d = dt(k.date);
       const cls = (k.dateEnd || k.date) < today ? "past" : i === nextIdx ? "next" : "";
       return `<li class="${cls}"><div class="d">${d.getDate()}. ${MONTHS[d.getMonth()]}<small>${k.dateEnd ? "bis " + fmtShort(k.dateEnd) : DAY_LONG[d.getDay()]}</small></div>
         <div><div class="t">${esc(k.title)} ${k.deadline ? '<span class="badge deadline">Frist</span>' : ""}${k.loc ? " " + placeBadge(k.loc) : ""}</div><div class="muted small">${esc(k.text)}</div></div></li>`;
-    }).join("")}</ul>`;
+    };
+    const split = nextIdx < 0 ? D.keyDates.length : nextIdx;
+    const past = D.keyDates.slice(0, split).map(row).join("");
+    const upcoming = D.keyDates.slice(split).map((k, i) => row(k, split + i)).join("");
+    return `<ul class="dates">${upcoming}</ul>${past ? `<details class="dates-past"><summary>Vergangen (${split})</summary><ul class="dates">${past}</ul></details>` : ""}`;
   }
 
   /* ========================================================================

@@ -8,7 +8,7 @@
   --sandstone: #E3D3BF; --limestone: #F3EBDD; --foam: #FAF7F1;
   --stone-shadow: #B5A18A; --stone: #857360;
   --ink: #38362F; --ink-soft: #4B4840;
-  --muted: #65584A; --placeholder: #857868; --success: #3F5F34;
+  --muted: #65584A; --placeholder: #65584A; --success: #3F5F34;
   --water: #14616F; --deep-teal: #0B3942; /* nur Logo */
 
   /* Kategorien Studienplan – erdige Töne, kein Wasser */
@@ -187,6 +187,8 @@ hr { border: 0; box-shadow: var(--seam); height: 1px; }
   .icon-btn svg { width: 18px; height: 18px; }
 }
 
+.brand > span { min-width: 0; }
+.brand strong { overflow: hidden; text-overflow: ellipsis; }
 .topbar-actions {
   display: flex;
   align-items: center;
@@ -219,7 +221,7 @@ hr { border: 0; box-shadow: var(--seam); height: 1px; }
 
 /* ---------- Layout ---------- */
 main { max-width: var(--maxw); margin: 0 auto; padding: 1.75rem 16px 2.5rem; outline: none; }
-.view { animation: rise .35s ease-out; }
+@media (prefers-reduced-motion: no-preference) { .view { animation: rise .35s ease-out; } }
 @keyframes rise { from { opacity: .6; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .page-head { margin: .75rem 0 1.75rem; }
 .page-head p { color: var(--muted); max-width: 72ch; font-size: 1.02rem; }
@@ -274,15 +276,15 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 1.75rem 16px 2.5rem; out
 .hero > * { position: relative; z-index: 1; }
 .hero h1 { margin-bottom: .75rem; max-width: 14ch; }
 .hero p { color: var(--muted); margin: 0; max-width: 56ch; }
-.hero .countdown { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.75rem; }
-.hero .pill-lg { background: var(--limestone); border-radius: 24px; padding: .8rem 1.1rem; min-width: 128px; box-shadow: var(--sh-in); }
-.pill-lg b { display: block; font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; line-height: 1.1; font-variant-numeric: tabular-nums; }
-.pill-lg span { font-size: .8rem; color: var(--muted); }
+.hero h1 { max-width: none; display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem 1rem; }
+.hero .wk-n { font-size: clamp(2.6rem, 8vw, 4.5rem); font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.hero .wk-sub { font-size: 1rem; font-weight: 500; color: var(--muted); }
+.next3 { list-style: none; padding: 0; margin: 1.5rem 0 0; display: grid; gap: .6rem; }
+.next3 li { display: grid; grid-template-columns: 9.5rem 1fr; gap: 1rem; padding: .6rem 1rem; background: var(--limestone); border-radius: 18px; box-shadow: var(--sh-in); }
+.next3 .when { font-weight: 700; font-variant-numeric: tabular-nums; }
+@media (max-width: 560px) { .next3 li { grid-template-columns: 1fr; gap: .1rem; } }
 
 /* ---------- Jetzt / Als Nächstes ---------- */
-.now-card { position: relative; }
-.now-label { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); display: flex; align-items: center; gap: .5rem; }
-.now-label::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--ink); box-shadow: 0 0 0 4px rgba(56,54,47,.12); }
 .now-title { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; margin: .3rem 0 .2rem; }
 .now-meta { color: var(--muted); font-size: .92rem; }
 
@@ -376,7 +378,7 @@ a.badge.loc:hover { transform: translateY(-1px); box-shadow: var(--sh-out); text
 .week-list { display: none; }
 @media (max-width: 759px) { .week { display: none; } .week-list { display: block; } }
 .day-block + .day-block { margin-top: 1.25rem; }
-.day-block h3 { font-size: .8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.day-block h3 { font-size: .875rem; color: var(--muted); }
 .day-block .course { margin-top: .6rem; display: grid; grid-template-columns: 92px 1fr; gap: .5rem; }
 .day-block .course .t { font-weight: 700; font-variant-numeric: tabular-nums; }
 .legend { display: flex; flex-wrap: wrap; gap: .45rem 1.1rem; font-size: .82rem; color: var(--muted); }
@@ -476,7 +478,9 @@ input:focus, select:focus { outline: none; box-shadow: var(--sh-in-deep), 0 0 0 
 .dates li:last-child { box-shadow: none; }
 .dates .d { text-align: center; background: var(--limestone); border-radius: 18px; padding: .45rem .2rem; font-weight: 800; line-height: 1.15; font-size: .86rem; box-shadow: var(--sh-out-sm); font-family: var(--font-display); }
 .dates .d small { display: block; font-family: var(--font); font-weight: 500; color: var(--muted); font-size: .7rem; }
-.dates li.past { opacity: .5; }
+.dates li.past { color: var(--muted); }
+.dates-past { margin-top: .5rem; }
+.dates-past summary { cursor: pointer; font-weight: 700; color: var(--muted); padding: .5rem 0; }
 .dates li.next .d { background: var(--ink); color: var(--foam); }
 .dates li.next .d small { color: var(--foam); opacity: .8; }
 .dates .t { font-weight: 700; }
@@ -495,7 +499,7 @@ input:focus, select:focus { outline: none; box-shadow: var(--sh-in-deep), 0 0 0 
 .links a { text-decoration: none; font-weight: 500; }
 .links a:hover { text-decoration: underline; }
 .link-group { background: var(--limestone); border-radius: var(--r-panel); padding: 1.1rem 1.2rem; box-shadow: var(--sh-in-sm); }
-.link-group h3 { font-size: .8rem; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); }
+.link-group h3 { font-size: .875rem; color: var(--muted); }
 .qa { padding-left: 1.2rem; margin: 0; }
 .qa li { margin-bottom: .45rem; }
 .search { width: 100%; margin-bottom: 1rem; }
@@ -589,6 +593,8 @@ dialog::backdrop { background: rgba(56,54,47,.35); backdrop-filter: blur(3px); }
 .ai-topbar-pill:focus-visible { outline: 2px solid var(--water); outline-offset: 2px; }
 .ai-pill-icon { display: grid; place-items: center; color: var(--water); line-height: 1; }
 .ai-pill-label { display: inline-flex; align-items: center; gap: .35rem; }
+/* Topbar war 477px breit bei 390px: PsyBot nur als Icon, Marke darf schrumpfen */
+@media (max-width: 560px) { .ai-pill-label { display: none; } .brand { flex-shrink: 1; } }
 .ai-pill-badge {
   background: rgba(20, 97, 111, .12);
   color: var(--water);
