@@ -31,8 +31,12 @@
         <a href="#infos" data-route="infos">Infos</a>
       </nav>
       <div class="topbar-actions">
-        <button class="ai-topbar-pill" id="aiBtn" aria-label="PsyBot KI-Studienassistent öffnen" title="Frag PsyBot alles zum Studium (Kostenlos &amp; ohne Anmeldung)">
-          <span class="ai-pill-icon">✨</span>
+        <button class="ai-topbar-pill" id="aiBtn" aria-label="PsyBot öffnen" title="PsyBot Studienassistent">
+          <span class="ai-pill-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/>
+            </svg>
+          </span>
           <span class="ai-pill-label">PsyBot <span class="ai-pill-badge">KI</span></span>
         </button>
         <button class="icon-btn" id="themeToggle" aria-label="Erscheinungsbild wechseln" title="Dark Mode umschalten">
@@ -59,7 +63,7 @@
     <div class="site-footer-inner">
       <p><strong>Inoffizieller Studienbegleiter Psychologie (B.Sc.)</strong> · Universität Heidelberg · WiSe 2026/27</p>
       <p class="small muted">Keine offizielle Webseite der Universität Heidelberg. Alle Angaben ohne Gewähr – maßgeblich sind die offiziellen Informationen, Modulhandbücher und Prüfungsordnungen des Instituts.</p>
-      <p class="small muted">🔒 <strong>100% datenschutzfreundlich:</strong> Speicherung deiner Einstellungen, Vpn-Stunden, Häkchen &amp; To-dos erfolgt ausschließlich lokal in deinem Browser (localStorage). Keine Server-Datenbank, kein Tracking. PsyBot antwortet standardmäßig 100 % lokal ohne Datenübertragung.</p>
+      <p class="small muted"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><strong>100% datenschutzfreundlich:</strong> Speicherung deiner Einstellungen, Vpn-Stunden, Häkchen &amp; To-dos erfolgt ausschließlich lokal in deinem Browser (localStorage). Keine Server-Datenbank, kein Tracking. PsyBot antwortet standardmäßig 100 % lokal ohne Datenübertragung.</p>
     </div>
   </footer>
 
@@ -131,34 +135,147 @@
     </div>
   </dialog>
 
+  <dialog id="calSyncModal" class="event-modal" aria-labelledby="calSyncTitle">
+    <div class="event-modal-window cal-sync-window">
+      <div class="event-modal-header">
+        <div class="event-modal-title-wrap">
+          <span class="badge" id="calSyncBadge">Abonnement</span>
+          <h2 id="calSyncTitle">Kalender synchronisieren &amp; abonnieren</h2>
+        </div>
+        <button type="button" class="del" id="calSyncClose" aria-label="Schließen">×</button>
+      </div>
+      <div class="event-modal-body" id="calSyncBody">
+        <p class="muted">Abonniere deinen Vorlesungs- und Semesterkalender in Google Calendar, Apple Kalender oder Outlook. Der Kalender bleibt über diese Feed-URL <strong>dauerhaft synchronisiert</strong> und aktualisiert sich automatisch bei Raum-, Dozenten- oder Terminänderungen.</p>
+
+        <div class="cal-sync-config">
+          <div class="cal-sync-field">
+            <label for="syncUeGroup">Übungsgruppe Allg. Psychologie 1:</label>
+            <select id="syncUeGroup">
+              <option value="all">Alle Übungsgruppen (Standard)</option>
+              <option value="1">Gruppe 1 · Mi 14:15–15:45 (HS II)</option>
+              <option value="2">Gruppe 2 · Mi 16:15–17:45 (HS I)</option>
+              <option value="3">Gruppe 3 · Do 16:15–17:45 (HS II)</option>
+              <option value="none">Keine Übung anzeigen</option>
+            </select>
+          </div>
+
+          <div class="cal-sync-field">
+            <label for="syncTutGroup">Statistik-Tutorium (freiwillig):</label>
+            <select id="syncTutGroup">
+              <option value="none">Kein Tutorium (Standard)</option>
+              <option value="1">Gruppe 1 · Di 11:15–12:45</option>
+              <option value="2">Gruppe 2 · Mi 09:15–10:45</option>
+              <option value="3">Gruppe 3 · Do 09:15–10:45</option>
+              <option value="all">Alle Tutorien anzeigen</option>
+            </select>
+          </div>
+
+          <div class="cal-sync-checks">
+            <label class="cal-sync-check">
+              <input type="checkbox" id="syncIncludeEks" checked>
+              <span>EKS-Einführungswoche einbeziehen</span>
+            </label>
+            <label class="cal-sync-check">
+              <input type="checkbox" id="syncIncludeExams" checked>
+              <span>Fristen &amp; Klausuren einbeziehen</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="cal-sync-actions-box">
+          <a id="syncGoogleBtn" href="#" target="_blank" rel="noopener" class="btn primary cal-sync-btn-large">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            In Google Kalender abonnieren (1-Klick)
+          </a>
+
+          <div class="cal-sync-link-wrap">
+            <label for="syncUrlInput" class="small"><strong>Direkte Abonnement-URL:</strong></label>
+            <div class="cal-sync-input-row">
+              <input type="text" id="syncUrlInput" readonly spellcheck="false">
+              <button type="button" class="btn small" id="syncCopyBtn">Kopieren</button>
+            </div>
+            <p class="small muted" style="margin-top:4px">
+              In Google Kalender links bei <em>„Weitere Kalender“</em> auf <strong>+</strong> ➔ <strong>„Per URL hinzufügen“</strong> ➔ Link einfügen.
+            </p>
+          </div>
+
+          <div class="cal-sync-alt-btns">
+            <a id="syncWebcalBtn" href="#" class="btn ghost small">Apple / Outlook (webcal://)</a>
+            <button type="button" class="btn ghost small" id="syncDownloadIcsBtn">Als .ics herunterladen</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
   <dialog id="aiModal" class="ai-modal" aria-labelledby="aiTitle">
     <div class="ai-window">
       <div class="ai-header">
         <div class="ai-header-title">
-          <span class="ai-avatar">✨</span>
-          <div>
-            <div style="display:flex;align-items:center;gap:.5rem">
-              <h2 id="aiTitle" style="margin:0">PsyBot · KI-Studienassistent</h2>
-              <span class="ai-status-pill">🟢 Ohne Anmeldung</span>
+          <div class="ai-avatar-badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/>
+            </svg>
+          </div>
+          <div class="ai-header-text">
+            <div class="ai-header-row">
+              <h2 id="aiTitle">PsyBot</h2>
+              <span class="ai-status-indicator">Bereit · Lokal &amp; ohne Login</span>
             </div>
-            <small class="muted">Kennt Modulhandbuch, Prüfungsordnung, Termine &amp; URZ-IT</small>
+            <div class="ai-subtitle">Studienbegleiter B.Sc. Psychologie Heidelberg</div>
           </div>
         </div>
-        <button type="button" class="del" id="aiClose" aria-label="Schließen">×</button>
+        <button type="button" class="ai-close-btn" id="aiClose" aria-label="Schließen" title="Schließen (Esc)">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
       </div>
 
       <div class="ai-messages" id="aiMessages" role="log" aria-live="polite">
-        <div class="ai-bubble bot">
-          Hallo! Ich bin <strong>PsyBot</strong>, dein Assistent für das Psychologiestudium an der Uni Heidelberg. 🧠<br><br>
-          Ich kenne alle Termine, Fristen, Vpn-Regeln, IT-Dienste und Studienpläne – <strong>100% kostenlos und ohne Anmeldung</strong>.<br><br>
-          Frage mich etwas oder wähle einen Schnelleinstieg:
+        <div class="ai-empty-state" id="aiEmptyState">
+          <div class="ai-welcome-header">
+            <h3 class="ai-welcome-title">Frag PsyBot zum Studium</h3>
+            <p class="ai-welcome-desc">Fakten, Termine und Regeln für das 1. Semester Psychologie.</p>
+          </div>
           <div class="ai-suggestions">
-            <button data-ai-prompt="Wo trage ich meine Vpn-Stunden ein?">🔬 30 Vpn-Stunden eintragen</button>
-            <button data-ai-prompt="Wann und wo sind meine Vorlesungen?">📅 Stundenplan &amp; Vorlesungen</button>
-            <button data-ai-prompt="Wie melde ich mich für eine Klausur krank?">📋 Krankmeldung (3-Tage-Frist)</button>
-            <button data-ai-prompt="Was muss ich bei der Orientierungsprüfung beachten?">⚠️ Orientierungsprüfung</button>
-            <button data-ai-prompt="Wie richte ich Uni-WLAN eduroam und VPN ein?">💻 WLAN &amp; VPN einrichten</button>
-            <button data-ai-prompt="Was ist der Unterschied zwischen approbationsrelevant und allgemein?">🎓 Approbationsweg</button>
+            <button type="button" class="ai-quick-btn" data-ai-prompt="Wo trage ich meine Vpn-Stunden ein?">
+              <span class="ai-quick-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.5L5.5 17a2 2 0 0 0 1.7 3h9.6a2 2 0 0 0 1.7-3L14 9.5V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></svg>
+              </span>
+              <span class="ai-quick-label">30 Vpn-Stunden</span>
+            </button>
+            <button type="button" class="ai-quick-btn" data-ai-prompt="Wann und wo sind meine Vorlesungen?">
+              <span class="ai-quick-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </span>
+              <span class="ai-quick-label">Vorlesungen &amp; Plan</span>
+            </button>
+            <button type="button" class="ai-quick-btn" data-ai-prompt="Wie melde ich mich für eine Klausur krank?">
+              <span class="ai-quick-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 12h6"/><path d="M9 16h4"/></svg>
+              </span>
+              <span class="ai-quick-label">Krankmeldung (3 Tage)</span>
+            </button>
+            <button type="button" class="ai-quick-btn" data-ai-prompt="Was muss ich bei der Orientierungsprüfung beachten?">
+              <span class="ai-quick-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              </span>
+              <span class="ai-quick-label">Orientierungsprüfung</span>
+            </button>
+            <button type="button" class="ai-quick-btn" data-ai-prompt="Wie richte ich Uni-WLAN eduroam und VPN ein?">
+              <span class="ai-quick-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              </span>
+              <span class="ai-quick-label">WLAN &amp; VPN</span>
+            </button>
+            <button type="button" class="ai-quick-btn" data-ai-prompt="Was ist der Unterschied zwischen approbationsrelevant und allgemein?">
+              <span class="ai-quick-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+              </span>
+              <span class="ai-quick-label">Approbationsweg</span>
+            </button>
           </div>
         </div>
       </div>
@@ -171,21 +288,25 @@
         <div class="ai-optin-hint muted">Standardmäßig antwortet PsyBot 100 % lokal aus verifizierten Institutsdaten. Bei Aktivierung wird deine Einzelfrage ohne persönlichen Zustand (Stundenplan, Notizen, Häkchen) an ein externes Sprachmodell übermittelt.</div>
       </div>
 
-      <form class="ai-input-form" id="aiForm">
-        <input type="text" id="aiInput" placeholder="Frage z. B. 'Wo trage ich Vpn ein?' oder 'Krankmeldung?' …" aria-label="Frage an PsyBot" autocomplete="off" required>
-        <button type="submit" class="btn primary" id="aiSend" aria-label="Senden">
-          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-        </button>
-      </form>
+      <div class="ai-footer-dock">
+        <form class="ai-input-form" id="aiForm">
+          <input type="text" id="aiInput" placeholder="Frag etwas zu Studium, Fristen, IT …" aria-label="Frage an PsyBot" autocomplete="off" required>
+          <button type="submit" class="ai-send-btn" id="aiSend" aria-label="Senden" title="Senden (Enter)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="19" x2="12" y2="5"></line>
+              <polyline points="5 12 12 5 19 12"></polyline>
+            </svg>
+          </button>
+        </form>
+        <div class="ai-disclaimer">Antworten können Fehler enthalten – Quellen prüfen.</div>
+      </div>
     </div>
   </dialog>
 
-  <button class="ai-float-btn" id="aiFloatBtn" aria-label="Frag PsyBot zum Studium" title="Frag PsyBot alles zum Studium (Kostenlos &amp; ohne Anmeldung)">
-    <span class="ai-float-icon">✨</span>
-    <span class="ai-float-text">
-      <strong>Frag PsyBot</strong>
-      <small>Uni-Assistent · Lokal &amp; Datenschutz-sicher</small>
-    </span>
+  <button class="ai-float-btn" id="aiFloatBtn" aria-label="PsyBot öffnen" title="PsyBot">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/>
+    </svg>
   </button>
 
   <div id="toast" role="status" aria-live="polite"></div>
