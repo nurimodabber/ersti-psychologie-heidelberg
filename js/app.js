@@ -264,7 +264,7 @@
         <div class="stack">
           <div class="card">
             <div class="card-head"><h2>Studienfortschritt</h2><a class="btn" href="#studienplan">Planen</a></div>
-            <div class="progress" aria-label="Fortschritt"><div style="width:${(p.done / p.total * 100).toFixed(1)}%"></div></div>
+            <div class="progress" role="progressbar" aria-label="Fortschritt" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(p.done / p.total * 100)}"><div style="width:${(p.done / p.total * 100).toFixed(1)}%"></div></div>
             <div class="stat-row">
               <div class="stat"><b>${p.done}</b><span>von ${p.total} LP</span></div>
               <div class="stat"><b>${esc(D.plans[state.plan].short)}</b><span>gewählter Plan</span></div>
@@ -320,7 +320,7 @@
         <div class="vpn-count">${total} <small>/ 30 Std.</small></div>
       </div>
       <div class="vpn-bar-wrap">
-        <div class="progress" aria-label="Vpn Fortschritt"><div style="width:${pct}%;background:${complete ? "var(--success)" : "var(--ink)"}"></div></div>
+        <div class="progress" role="progressbar" aria-label="Vpn Fortschritt" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(pct)}"><div style="width:${pct}%;background:${complete ? "var(--success)" : "var(--ink)"}"></div></div>
       </div>
       ${complete ? `<div class="notice" style="margin-bottom:1rem;color:var(--success)"><b>🎉 30 Stunden erreicht!</b> Reiche deinen ausgefüllten Vpn-Zettel im Prüfungsamt (F042) ein.</div>` : ""}
       ${list.length ? `<ul class="vpn-entries">${list.map(v => `
@@ -331,7 +331,7 @@
           </div>
           <div style="display:flex;align-items:center;gap:.6rem">
             <span class="hours">+${v.hours} h</span>
-            <button class="del" data-del-vpn="${esc(v.id)}" aria-label="Eintrag löschen" style="border:0;background:var(--foam);color:var(--muted);cursor:pointer;font-size:1.1rem;width:28px;height:28px;border-radius:50%;box-shadow:var(--sh-out-sm)">×</button>
+            <button class="del" data-del-vpn="${esc(v.id)}" aria-label="Eintrag löschen" style="border:0;background:var(--foam);color:var(--muted);cursor:pointer;font-size:1.1rem;width:44px;height:44px;border-radius:50%;box-shadow:var(--sh-out-sm)">×</button>
           </div>
         </li>`).join("")}</ul>` : `<p class="small muted" style="margin-bottom:1rem">Noch keine Stunden eingetragen. Trage hier jede absolvierte Studie ein.</p>`}
       <form class="vpn-form" data-vpn-add>
